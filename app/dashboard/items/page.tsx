@@ -23,6 +23,7 @@ export default function ItemsPage() {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [loadingGroupPrices, setLoadingGroupPrices] = useState(false);
 
   const [itemGroupPrices, setItemGroupPrices] = useState<any[]>([]);
   const [newGroupPrice, setNewGroupPrice] = useState({ group_id: '', price: '' });
@@ -71,6 +72,7 @@ export default function ItemsPage() {
   }, []);
 
   const fetchItemGroupPrices = async (itemId: number) => {
+    setLoadingGroupPrices(true);
     try {
       const res = await fetch(`${API_URL}/items/${itemId}/group-prices`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
@@ -79,47 +81,72 @@ export default function ItemsPage() {
       if (data.success) setItemGroupPrices(data.data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoadingGroupPrices(false);
     }
   };
 
   const handleAddGroupPrice = async () => {
-    if (!newGroupPrice.group_id || !newGroupPrice.price || !editId) return;
-    try {
-      const res = await fetch(`${API_URL}/items/${editId}/group-prices`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify(newGroupPrice)
-      });
-      const data = await res.json();
-      if (data.success) {
-        fetchItemGroupPrices(editId);
-        setNewGroupPrice({ group_id: '', price: '' });
+    if (!newGroupPrice.group_id || !newGroupPrice.price) return;
+    
+    if (isEdit && editId) {
+      try {
+        const res = await fetch(`${API_URL}/items/${editId}/group-prices`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify(newGroupPrice)
+        });
+        const data = await res.json();
+        if (data.success) {
+          fetchItemGroupPrices(editId);
+          setNewGroupPrice({ group_id: '', price: '' });
+        }
+      } catch (err) {
+        alert("Error adding group price");
       }
-    } catch (err) {
-      alert("Error adding group price");
+    } else {
+      // Local state only for new item
+      const group = customerGroups.find(g => g.id === parseInt(newGroupPrice.group_id));
+      const newItemPrice = {
+        group_id: parseInt(newGroupPrice.group_id),
+        group_name: group ? group.name : 'Unknown',
+        price: newGroupPrice.price
+      };
+      
+      // Check if group already exists in list
+      if (itemGroupPrices.some(gp => gp.group_id === newItemPrice.group_id)) {
+        setItemGroupPrices(itemGroupPrices.map(gp => gp.group_id === newItemPrice.group_id ? newItemPrice : gp));
+      } else {
+        setItemGroupPrices([...itemGroupPrices, newItemPrice]);
+      }
+      setNewGroupPrice({ group_id: '', price: '' });
     }
   };
 
   const handleRemoveGroupPrice = async (groupId: number) => {
-    if (!editId) return;
-    try {
-      const res = await fetch(`${API_URL}/items/${editId}/group-prices`, {
-        method: 'POST', 
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({ group_id: groupId, price: null })
-      });
-      const data = await res.json();
-      if (data.success) {
-        fetchItemGroupPrices(editId);
+    if (isEdit && editId) {
+      try {
+        const res = await fetch(`${API_URL}/items/${editId}/group-prices`, {
+          method: 'POST', 
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({ group_id: groupId, price: null })
+        });
+        const data = await res.json();
+        if (data.success) {
+          fetchItemGroupPrices(editId);
+        }
+      } catch (err) {
+        alert("Error removing group price");
       }
-    } catch (err) {
-      alert("Error removing group price");
+    } else {
+      // Local state only
+      setItemGroupPrices(itemGroupPrices.filter(gp => gp.group_id !== groupId));
     }
   };
 
@@ -146,7 +173,10 @@ export default function ItemsPage() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          group_prices: !isEdit ? itemGroupPrices : undefined
+        })
       });
       const data = await res.json();
       if (data.success) {
@@ -481,8 +511,7 @@ export default function ItemsPage() {
                   </div>
                 </div>
 
-                {isEdit && (
-                  <div className="pt-8 border-t border-gray-100">
+                <div className="pt-8 border-t border-gray-100">
                     <div className="flex items-center gap-2 mb-6">
                       <Layers className="w-4 h-4 text-orange-600" />
                       <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.2em]">Group Specific Prices</h3>
@@ -529,7 +558,12 @@ export default function ItemsPage() {
                       </div>
 
                       <div className="space-y-2">
-                        {itemGroupPrices.length > 0 ? (
+                        {loadingGroupPrices ? (
+                          <div className="flex flex-col items-center justify-center py-12 space-y-3">
+                            <div className="w-6 h-6 border-2 border-orange-500/20 border-t-orange-500 rounded-full animate-spin" />
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest animate-pulse">Loading Matrix...</p>
+                          </div>
+                        ) : itemGroupPrices.length > 0 ? (
                           itemGroupPrices.map(gp => (
                             <div key={gp.group_id} className="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-xl shadow-sm">
                               <div className="flex flex-col">
@@ -553,9 +587,8 @@ export default function ItemsPage() {
                           </div>
                         )}
                       </div>
-                    </div>
+                      </div>
                   </div>
-                )}
 
                 <div className="pt-8 border-t border-gray-100 flex justify-end gap-3 bg-white mt-auto">
                   <button type="button" onClick={handleCloseModal} className="px-6 py-2.5 font-bold text-slate-500 rounded-lg hover:bg-gray-50 transition uppercase text-[10px] tracking-widest">Cancel</button>
