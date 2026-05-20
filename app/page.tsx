@@ -11,7 +11,9 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
+  Mail,
   Menu,
+  Phone,
   Printer,
   ScanLine,
   ShieldCheck,
@@ -22,6 +24,7 @@ import {
 import image1 from '@/src/1.jpeg';
 import image2 from '@/src/2.jpeg';
 import image3 from '@/src/3.jpeg';
+import image3Old from '@/src/3_old.jpeg';
 import image4 from '@/src/4.jpeg';
 import image5 from '@/src/5.jpeg';
 import image6 from '@/src/6.jpeg';
@@ -47,9 +50,10 @@ const themeVars: CSSProperties = {
 
 const navLinks = [
   { label: 'Home', href: '#home' },
-  { label: 'Overview', href: '#overview' },
-  { label: 'Why SuperVendor?', href: '#workflow' },
-  { label: 'Steps', href: '#services' },
+  { label: 'How It Works', href: '#how-it-works' },
+  { label: 'Hardware', href: '#hardware' },
+  { label: 'Pricing', href: '#pricing' },
+  { label: 'Support & Contact', href: '#contact' },
 ];
 
 const heroSlides: Array<{
@@ -59,31 +63,37 @@ const heroSlides: Array<{
   image: StaticImageData;
   alt: string;
   spotlight: string;
+  ctaText: string;
 }> = [
     {
-      eyebrow: 'Smart Delivery System',
-      title: 'Faster Deliveries. Zero Errors.',
+      eyebrow: 'Mobility & Power',
+      title: 'Your Delivery Business, Fully Mobile',
       description:
-        'Scan, sync, and print invoices in seconds. Keep your drivers moving and your customers happy.',
+        'Super Vendor is built for small vendors who need powerful tools on the go. Manage your routes, track products, and service your clients seamlessly from the palm of your hand.',
       image: image1,
       alt: 'Delivery driver beside a stocked vehicle holding a portable invoice printer.',
       spotlight: 'Portable printing at the curb',
+      ctaText: 'Get Started',
     },
     {
-      eyebrow: 'Smart Invoice Control',
-      title: 'Invoicing Just Got Smarter.',
-      description: 'Create invoices instantly with live delivery updates.',
+      eyebrow: 'Handheld Invoicing',
+      title: 'Print Invoices Right at the Location',
+      description:
+        'Close the deal instantly. Generate and print professional, accurate invoices directly from your handheld device and mobile printer before you even walk out the door.',
       image: image6,
       alt: 'Portable invoice printer producing printed receipts beside a stack of invoices.',
       spotlight: 'Print at the stop',
+      ctaText: 'See How It Works',
     },
     {
-      eyebrow: 'Live Route Sync',
-      title: 'Deliver. Sync. Print. Done.',
-      description: 'One simple flow for drivers, stores, and invoices.',
+      eyebrow: 'Inventory Management',
+      title: 'Total Inventory Control on the Road',
+      description:
+        'Know exactly what’s on your truck at all times. Track your stock levels in real-time as you deliver to local businesses, ensuring complete accuracy at every stop.',
       image: image5,
       alt: 'Delivery team unloading a vehicle while another worker updates stock from a handheld device.',
       spotlight: 'One system for every stop',
+      ctaText: 'Explore Features',
     },
   ];
 
@@ -138,36 +148,92 @@ const reasons = [
 
 const serviceCards = [
   {
-    eyebrow: 'Step 01',
-    title: 'Arrival Scanning',
-    description: 'Scan items at the start of the stop.',
+    eyebrow: '1. The Setup',
+    title: 'Simple & Mobile',
+    description: 'Everything you need to run your route fits in the palm of your hand.',
     image: image5,
     alt: 'Delivery team unloading a vehicle and using handheld devices.',
     featured: false,
+    bullets: [
+      {
+        label: 'Subscribe & Log In',
+        text: 'Sign up for our service and log in using any mobile device with an internet connection.',
+      },
+      {
+        label: 'Mobile Printing',
+        text: 'Pair your device with a standard 3-inch mobile receipt printer. You can use your existing compatible printer, or purchase one directly from us to guarantee seamless integration.',
+      },
+    ],
   },
   {
-    eyebrow: 'Step 02',
-    title: 'Shelf Refill Sync',
-    description: 'Update stock while items go to the shelf.',
-    image: image3,
+    eyebrow: '2. Inventory',
+    title: 'Smart Inventory Control',
+    description: 'Never guess what is on the truck again. Super Vendor gives you total visibility over your stock.',
+    image: image3Old,
     alt: 'Driver organizing snacks and supplies inside a convenience store aisle.',
     featured: false,
+    bullets: [
+      {
+        label: 'Warehouse-to-Van Tracking',
+        text: 'Digitally transfer inventory from your main warehouse directly to your delivery vans.',
+      },
+      {
+        label: 'Driver Visibility',
+        text: 'Delivery drivers know exactly how many items they have on hand at all times, right from their device.',
+      },
+      {
+        label: 'Set Par Levels',
+        text: 'Establish minimum stock requirements so you always know when it is time to reorder or restock your vehicles.',
+      },
+    ],
   },
   {
-    eyebrow: 'Step 03',
-    title: 'Invoice Review',
-    description: 'Check the order with the customer.',
+    eyebrow: '3. Customers',
+    title: 'Customer & Pricing Management',
+    description: 'Tailor your service to fit your best clients and largest accounts.',
     image: image2,
     alt: 'Two team members reviewing boxes and invoice paperwork inside a convenience store.',
     featured: false,
+    bullets: [
+      {
+        label: 'Customer Profiles',
+        text: 'Manage all your store owners and client details in one easy-to-access place.',
+      },
+      {
+        label: 'Custom Pricing',
+        text: 'Set up custom pricing tiers and special discounts for individual customers.',
+      },
+      {
+        label: 'Group Locations',
+        text: 'Managing a chain? Group multiple store locations together to apply uniform special pricing across the board.',
+      },
+    ],
   },
   {
-    eyebrow: 'Step 04',
-    title: 'Instant Printout',
-    description: 'Print the invoice right there on the spot.',
+    eyebrow: '4. Delivery',
+    title: 'Deliver & Invoice on the Spot',
+    description: 'Close out your stops faster and look professional doing it.',
     image: image6,
     alt: 'Portable printer creating a printed invoice.',
     featured: true,
+    bullets: [
+      {
+        label: 'Live Order Adjustments',
+        text: 'Add products to the order on the fly right at the delivery location.',
+      },
+      {
+        label: 'Order Check-In Tabs',
+        text: 'Print order check-in tabs to help the store quickly verify the delivery.',
+      },
+      {
+        label: 'Instant Mobile Invoices',
+        text: 'Print a physical, accurate invoice on your 3-inch mobile printer before you even leave the store.',
+      },
+      {
+        label: 'Email Confirmations',
+        text: 'Automatically shoot a digital copy of the invoice straight to the customer’s email for their records.',
+      },
+    ],
   },
 ];
 
@@ -175,6 +241,7 @@ export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showTopButton, setShowTopButton] = useState(false);
+  const [termsOpen, setTermsOpen] = useState(false);
 
   const advanceSlide = useEffectEvent((direction: 1 | -1 = 1) => {
     startTransition(() => {
@@ -473,7 +540,7 @@ export default function Home() {
                         href="/login"
                         className="inline-flex items-center justify-center gap-2 rounded-full bg-[var(--landing-accent)] px-7 py-3.5 text-sm font-semibold text-white shadow-[0_18px_48px_rgba(200,108,73,0.30)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_56px_rgba(200,108,73,0.36)]"
                       >
-                        Login
+                        {currentSlide.ctaText}
                         <ArrowRight className="h-4 w-4" />
                       </Link>
                       <Link
@@ -656,20 +723,19 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="workflow" className="scroll-mt-32 px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
+        <section id="hardware" className="scroll-mt-32 px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-              <div data-reveal="left" className="relative overflow-hidden rounded-[2.4rem] border border-black/6 bg-[var(--landing-brand-strong)] shadow-[0_28px_80px_rgba(17,32,51,0.16)]">
-                <div className="relative aspect-[5/6]">
+              <div data-reveal="left" className="relative overflow-hidden rounded-[2.4rem] border border-black/6 bg-white shadow-[0_28px_80px_rgba(17,32,51,0.16)]">
+                <div className="relative aspect-square bg-white">
                   <Image
                     src={image3}
-                    alt="Driver arranging products and supplies inside a retail aisle."
+                    alt="Three panels showing delivery driver by a van, checking inventory inside the van, and printing an invoice at a store counter."
                     fill
                     placeholder="blur"
                     sizes="(min-width: 1024px) 38vw, 100vw"
                     className="object-cover"
                   />
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(13,27,43,0.04)_0%,rgba(13,27,43,0.64)_100%)]" />
                 </div>
               </div>
 
@@ -721,17 +787,17 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="services" className="scroll-mt-32 px-4 pb-20 pt-4 sm:px-6 lg:px-8 lg:pb-24">
+        <section id="how-it-works" className="scroll-mt-32 px-4 pb-20 pt-4 sm:px-6 lg:px-8 lg:pb-24">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-3xl text-center" data-reveal="zoom">
               <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[var(--landing-accent)]">
-                Delivery Steps
+                How It Works
               </p>
               <h2 className="mt-4 font-[family:var(--font-space-grotesk)] text-4xl font-bold leading-[0.95] tracking-[-0.06em] text-[var(--landing-brand-strong)] sm:text-5xl">
-                Four simple steps at every stop.
+                How It Works: From Warehouse to Storefront
               </h2>
               <p className="mt-6 text-lg leading-8 text-[var(--landing-muted)]">
-                Scan, update, check, and print.
+                A simple, robust, and connected delivery loop.
               </p>
             </div>
 
@@ -741,16 +807,16 @@ export default function Home() {
                   key={card.title}
                   data-reveal="zoom"
                   style={{ transitionDelay: `${index * 100}ms` }}
-                  className="relative pt-12"
+                  className="relative pt-16"
                 >
-                  <article className="group relative h-full rounded-[2.2rem] border border-black/6 bg-white px-7 pb-8 pt-16 text-center text-[var(--landing-brand-strong)] shadow-[0_24px_64px_rgba(17,32,51,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-[rgba(29,65,96,0.4)] hover:bg-[linear-gradient(180deg,#1d4160_0%,#0d1b2b_100%)] hover:text-white hover:shadow-[0_30px_72px_rgba(13,27,43,0.18)]">
-                    <div className="absolute left-1/2 top-0 h-24 w-24 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[1.6rem] border-4 border-[var(--landing-surface)] bg-white shadow-[0_18px_44px_rgba(17,32,51,0.12)]">
+                  <article className="group relative h-full rounded-[2.2rem] border border-black/6 bg-white px-8 pb-10 pt-20 text-center text-[var(--landing-brand-strong)] shadow-[0_24px_64px_rgba(17,32,51,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-[rgba(29,65,96,0.4)] hover:bg-[linear-gradient(180deg,#1d4160_0%,#0d1b2b_100%)] hover:text-white hover:shadow-[0_30px_72px_rgba(13,27,43,0.18)]">
+                    <div className="absolute left-1/2 top-0 h-32 w-32 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[2.2rem] border-4 border-[var(--landing-surface)] bg-white shadow-[0_20px_50px_rgba(17,32,51,0.15)]">
                       <Image
                         src={card.image}
                         alt={card.alt}
                         fill
                         placeholder="blur"
-                        sizes="96px"
+                        sizes="128px"
                         className="object-cover"
                       />
                     </div>
@@ -760,15 +826,245 @@ export default function Home() {
                     >
                       {card.eyebrow}
                     </p>
-                    <h3 className="mt-4 font-[family:var(--font-space-grotesk)] text-3xl font-semibold leading-tight tracking-[-0.05em]">
+                    <h3 className="mt-4 font-[family:var(--font-space-grotesk)] text-2xl font-bold leading-tight tracking-[-0.05em]">
                       {card.title}
                     </h3>
-                    <p className="mt-4 text-sm leading-7 text-[var(--landing-muted)] transition-colors duration-300 group-hover:text-white/78">
+                    <p className="mt-4 text-sm leading-relaxed text-[var(--landing-muted)] transition-colors duration-300 group-hover:text-white/78">
                       {card.description}
                     </p>
+                    <div className="mt-6 space-y-4 text-left border-t border-black/5 pt-5 transition-colors duration-300 group-hover:border-white/10">
+                      {card.bullets.map((bullet) => (
+                        <div key={bullet.label} className="text-[0.825rem] leading-relaxed">
+                          <p className="font-bold text-[var(--landing-brand-strong)] transition-colors duration-300 group-hover:text-white">
+                            {bullet.label}
+                          </p>
+                          <p className="mt-1 text-[0.785rem] text-[var(--landing-muted)] transition-colors duration-300 group-hover:text-white/80">
+                            {bullet.text}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                   </article>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="pricing" className="scroll-mt-32 px-4 py-20 sm:px-6 lg:px-8 lg:py-24 bg-[var(--landing-surface-strong)]">
+          <div className="mx-auto max-w-7xl">
+            <div className="mx-auto max-w-4xl text-center" data-reveal="zoom">
+              <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[var(--landing-accent)]">
+                Pricing Plans
+              </p>
+              <h2 className="mt-4 font-[family:var(--font-space-grotesk)] text-4xl font-bold leading-[1.1] tracking-[-0.06em] text-[var(--landing-brand-strong)] sm:text-5xl">
+                Find the Right Plan for Your Operations
+              </h2>
+              <p className="mt-6 text-lg leading-8 text-[var(--landing-muted)]">
+                We offer two specialized software packages built specifically for small and growing vendors. If you are a large company looking for a comprehensive solution, we can help build a custom app equipped with your own dedicated website and domain. With our custom solutions, you have the flexibility to choose your own hosting provider and maintain absolute control over your own data.
+              </p>
+              <p className="mt-4 text-sm text-[var(--landing-accent)] font-semibold">
+                If you can't select from our available packages below, please contact us for more information on a tailored solution.
+              </p>
+            </div>
+
+            <div className="mt-16 grid gap-8 md:grid-cols-3 max-w-6xl mx-auto items-stretch">
+              <div data-reveal="left" className="relative rounded-[2.2rem] border border-black/6 bg-white p-8 shadow-[0_24px_64px_rgba(17,32,51,0.08)] flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-xl">
+                <div>
+                  <h3 className="text-2xl font-bold text-[var(--landing-brand-strong)] font-[family:var(--font-space-grotesk)]">Small Vendor Package</h3>
+                  <p className="mt-4 text-sm text-[var(--landing-muted)] min-h-[48px]">Designed specifically for small vendors looking to streamline their daily operations.</p>
+                  <p className="mt-6">
+                    <span className="text-5xl font-bold tracking-tight text-[var(--landing-brand-strong)] font-[family:var(--font-space-grotesk)]">$59.99</span>
+                    <span className="text-sm font-semibold text-[var(--landing-muted)]">/month</span>
+                  </p>
+                  <ul className="mt-8 space-y-4 text-sm text-[var(--landing-brand-strong)]">
+                    <li className="flex items-start gap-3">
+                      <Check className="h-4 w-4 text-[var(--landing-highlight)] shrink-0 mt-1" />
+                      <span><strong>Customers:</strong> Manage up to 200 customers</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <Check className="h-4 w-4 text-[var(--landing-highlight)] shrink-0 mt-1" />
+                      <span><strong>Products:</strong> Track up to 150 products</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <Check className="h-4 w-4 text-[var(--landing-highlight)] shrink-0 mt-1" />
+                      <span><strong>Logistics:</strong> Manage up to 3 delivery vans</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <Check className="h-4 w-4 text-[var(--landing-highlight)] shrink-0 mt-1" />
+                      <span><strong>Storage:</strong> Supports 1 warehouse location</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="mt-8">
+                  <Link
+                    href="/login"
+                    className="w-full inline-flex items-center justify-center rounded-full border border-black/10 bg-white/50 py-3.5 text-sm font-semibold text-[var(--landing-brand-strong)] transition hover:bg-[var(--landing-accent-soft)]"
+                  >
+                    Get Started
+                  </Link>
+                </div>
+              </div>
+
+              <div data-reveal="zoom" className="relative rounded-[2.2rem] border border-[var(--landing-accent)] bg-[var(--landing-brand-strong)] p-8 shadow-[0_24px_64px_rgba(17,32,51,0.16)] flex flex-col justify-between text-white overflow-hidden transition hover:-translate-y-1 hover:shadow-2xl">
+                <div className="absolute right-0 top-0 bg-[var(--landing-accent)] text-white text-[0.65rem] font-bold uppercase tracking-wider px-5 py-2 rounded-bl-2xl">
+                  Popular
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold font-[family:var(--font-space-grotesk)]">Pro Vendor Package</h3>
+                  <p className="mt-4 text-sm text-white/70 min-h-[48px]">Built for professional vendors who are scaling their reach and expanding their inventory.</p>
+                  <p className="mt-6">
+                    <span className="text-5xl font-bold tracking-tight font-[family:var(--font-space-grotesk)]">$119.99</span>
+                    <span className="text-sm font-semibold text-white/60">/month</span>
+                  </p>
+                  <ul className="mt-8 space-y-4 text-sm text-white/90">
+                    <li className="flex items-start gap-3">
+                      <Check className="h-4 w-4 text-[var(--landing-accent)] shrink-0 mt-1" />
+                      <span><strong>Customers:</strong> Manage up to 400 customers</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <Check className="h-4 w-4 text-[var(--landing-accent)] shrink-0 mt-1" />
+                      <span><strong>Products:</strong> Track up to 300 products (includes category management)</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <Check className="h-4 w-4 text-[var(--landing-accent)] shrink-0 mt-1" />
+                      <span><strong>Logistics:</strong> Manage up to 9 delivery vans</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <Check className="h-4 w-4 text-[var(--landing-accent)] shrink-0 mt-1" />
+                      <span><strong>Storage:</strong> Supports up to 3 warehouse locations</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="mt-8">
+                  <Link
+                    href="/login"
+                    className="w-full inline-flex items-center justify-center rounded-full bg-[var(--landing-accent)] py-3.5 text-sm font-semibold text-white shadow-lg transition hover:bg-[var(--landing-accent)]/90"
+                  >
+                    Start Free Trial
+                  </Link>
+                </div>
+              </div>
+
+              <div data-reveal="right" className="relative rounded-[2.2rem] border border-black/6 bg-white p-8 shadow-[0_24px_64px_rgba(17,32,51,0.08)] flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-xl">
+                <div>
+                  <h3 className="text-2xl font-bold text-[var(--landing-brand-strong)] font-[family:var(--font-space-grotesk)]">Custom Enterprise</h3>
+                  <p className="mt-4 text-sm text-[var(--landing-muted)] min-h-[48px]">A fully tailored system for large companies needing absolute independence and limitless capacity.</p>
+                  <p className="mt-6">
+                    <span className="text-3xl font-bold tracking-tight text-[var(--landing-brand-strong)] font-[family:var(--font-space-grotesk)]">Contact Us</span>
+                    <span className="text-sm font-semibold text-[var(--landing-muted)]">/for pricing</span>
+                  </p>
+                  <ul className="mt-8 space-y-4 text-sm text-[var(--landing-brand-strong)]">
+                    <li className="flex items-start gap-3">
+                      <Check className="h-4 w-4 text-[var(--landing-highlight)] shrink-0 mt-1" />
+                      <span><strong>Capacity:</strong> Unlimited everything</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <Check className="h-4 w-4 text-[var(--landing-highlight)] shrink-0 mt-1" />
+                      <span><strong>Web Presence:</strong> Custom domain and full front-facing website</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <Check className="h-4 w-4 text-[var(--landing-highlight)] shrink-0 mt-1" />
+                      <span><strong>Experience:</strong> Advanced customer features and portals</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <Check className="h-4 w-4 text-[var(--landing-highlight)] shrink-0 mt-1" />
+                      <span><strong>Infrastructure:</strong> Dedicated custom app with hosting flexibility & complete data control</span>
+                    </li>
+                  </ul>
+                </div>
+                <div className="mt-8">
+                  <a
+                    href="#contact"
+                    className="w-full inline-flex items-center justify-center rounded-full border border-black/10 bg-white/50 py-3.5 text-sm font-semibold text-[var(--landing-brand-strong)] transition hover:bg-[var(--landing-accent-soft)]"
+                  >
+                    Contact us for pricing
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" className="scroll-mt-32 px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
+          <div className="mx-auto max-w-7xl">
+            <div className="grid gap-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+              <div data-reveal="left">
+                <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[var(--landing-accent)]">
+                  Get in Touch
+                </p>
+                <h2 className="mt-4 font-[family:var(--font-space-grotesk)] text-4xl font-bold leading-[0.95] tracking-[-0.06em] text-[var(--landing-brand-strong)] sm:text-5xl">
+                  Support & Contact
+                </h2>
+                <p className="mt-6 text-lg leading-8 text-[var(--landing-muted)]">
+                  Have questions about setting up your portable printer or syncing your routes? Our dedicated support team is here to keep your business moving.
+                </p>
+
+                <div className="mt-8 space-y-6 text-sm text-[var(--landing-brand-strong)]">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--landing-accent-soft)] text-[var(--landing-accent)]">
+                      <Mail className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="font-semibold">Email Us</p>
+                      <a href="mailto:support@supervendor.io" className="text-[var(--landing-accent)] hover:underline">support@supervendor.io</a>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--landing-accent-soft)] text-[var(--landing-accent)]">
+                      <Phone className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="font-semibold">Call Support</p>
+                      <p className="text-[var(--landing-muted)]">+1 (800) 555-0199</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div data-reveal="right" className="rounded-[2.2rem] border border-black/6 bg-white p-8 shadow-[0_24px_64px_rgba(17,32,51,0.08)]">
+                <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
+                  <div className="grid gap-6 sm:grid-cols-2">
+                    <div>
+                      <label htmlFor="contact-name" className="block text-xs font-semibold uppercase tracking-wider text-[var(--landing-brand-strong)] mb-2">Name</label>
+                      <input
+                        type="text"
+                        id="contact-name"
+                        required
+                        className="w-full rounded-2xl border border-black/10 px-4 py-3 text-sm focus:border-[var(--landing-accent)] focus:outline-none bg-[var(--landing-bg)]/20"
+                        placeholder="John Doe"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="contact-email" className="block text-xs font-semibold uppercase tracking-wider text-[var(--landing-brand-strong)] mb-2">Email</label>
+                      <input
+                        type="email"
+                        id="contact-email"
+                        required
+                        className="w-full rounded-2xl border border-black/10 px-4 py-3 text-sm focus:border-[var(--landing-accent)] focus:outline-none bg-[var(--landing-bg)]/20"
+                        placeholder="john@example.com"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="contact-message" className="block text-xs font-semibold uppercase tracking-wider text-[var(--landing-brand-strong)] mb-2">Message</label>
+                    <textarea
+                      id="contact-message"
+                      required
+                      rows={4}
+                      className="w-full rounded-2xl border border-black/10 px-4 py-3 text-sm focus:border-[var(--landing-accent)] focus:outline-none bg-[var(--landing-bg)]/20"
+                      placeholder="Tell us about your fleet..."
+                    ></textarea>
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full inline-flex items-center justify-center rounded-full bg-[var(--landing-accent)] py-3.5 text-sm font-semibold text-white shadow-[0_18px_48px_rgba(200,108,73,0.22)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_56px_rgba(200,108,73,0.30)]"
+                  >
+                    Send Message
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </section>
@@ -821,8 +1117,14 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-12 border-t border-white/10 pt-6 text-sm text-white/52">
-            Copyright {currentYear} SuperVendor.
+          <div className="mt-12 border-t border-white/10 pt-6 text-sm text-white/52 flex flex-col sm:flex-row sm:justify-between items-center gap-4">
+            <span>Copyright {currentYear} SuperVendor.</span>
+            <button
+              onClick={() => setTermsOpen(true)}
+              className="hover:text-white transition font-medium underline underline-offset-4"
+            >
+              Terms & Conditions
+            </button>
           </div>
         </div>
       </footer>
@@ -836,6 +1138,136 @@ export default function Home() {
         >
           <ArrowUp className="h-5 w-5" />
         </button>
+      ) : null}
+
+      {/* Terms and Conditions Modal */}
+      {termsOpen ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="relative w-full max-w-3xl rounded-[2.2rem] border border-black/6 bg-white p-8 md:p-10 shadow-[0_32px_96px_rgba(17,32,51,0.24)] text-[var(--landing-brand-strong)] max-h-[85vh] overflow-y-auto flex flex-col justify-between">
+            <button
+              onClick={() => setTermsOpen(false)}
+              aria-label="Close terms modal"
+              className="absolute right-6 top-6 flex h-10 w-10 items-center justify-center rounded-full border border-black/6 bg-white shadow-sm transition hover:bg-black/5"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            <div>
+              <h2 className="font-[family:var(--font-space-grotesk)] text-3xl font-bold leading-tight tracking-[-0.05em] text-[var(--landing-brand-strong)]">
+                Terms and Conditions
+              </h2>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-[var(--landing-accent)]">
+                Effective Date: May 19, 2026
+              </p>
+
+              <div className="mt-6 border-t border-black/5 pt-6 space-y-6 text-sm leading-relaxed text-[var(--landing-muted)]">
+                <p>
+                  Welcome to Super Vendor. These Terms and Conditions govern your access to and use of our software and services. This platform is strictly dedicated to serving small vendors. By choosing to use our services, you fully agree to the terms outlined below.
+                </p>
+
+                <div>
+                  <h3 className="font-bold text-[var(--landing-brand-strong)] text-base">
+                    1. Absolute Limitation of Liability
+                  </h3>
+                  <p className="mt-2">
+                    Super Vendor provides its platform and services on an "as is" basis. By using our platform, you explicitly agree that:
+                  </p>
+                  <ul className="mt-3 space-y-2 list-disc list-inside pl-2">
+                    <li>
+                      <strong className="text-[var(--landing-brand-strong)]">Zero Liability:</strong> Super Vendor, its developers, and its affiliates are not liable for anything related to your use of this service.
+                    </li>
+                    <li>
+                      <strong className="text-[var(--landing-brand-strong)]">Data Loss:</strong> We are completely absolved of any responsibility or liability for data losses, corruption, or breaches of any kind.
+                    </li>
+                    <li>
+                      <strong className="text-[var(--landing-brand-strong)]">Waiver of Legal Action:</strong> You agree that you cannot take any legal action, file lawsuits, or initiate arbitration against Super Vendor for any reason, under any circumstances, resulting from your decision to use our services.
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-[var(--landing-brand-strong)] text-base">
+                    2. Vendor and Customer Responsibility
+                  </h3>
+                  <p className="mt-2">
+                    Super Vendor operates solely as a software platform and is completely removed from your daily business operations and transactions.
+                  </p>
+                  <ul className="mt-3 space-y-2 list-disc list-inside pl-2">
+                    <li>
+                      <strong className="text-[var(--landing-brand-strong)]">Full Accountability:</strong> You and your customers bear total responsibility for everything concerning your business, your transactions, and your interactions.
+                    </li>
+                    <li>
+                      <strong className="text-[var(--landing-brand-strong)]">Product Delivery:</strong> We are not responsible for the products you deliver, the quality of your goods, shipping issues, or customer disputes.
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-[var(--landing-brand-strong)] text-base">
+                    3. Legal Compliance and Prohibited Activities
+                  </h3>
+                  <p className="mt-2">
+                    As a vendor utilizing our platform, you must operate strictly within the bounds of the law.
+                  </p>
+                  <ul className="mt-3 space-y-2 list-disc list-inside pl-2">
+                    <li>
+                      <strong className="text-[var(--landing-brand-strong)]">USA Compliance:</strong> You are entirely responsible for ensuring that all products you sell and distribute are 100% legal to sell within the United States of America.
+                    </li>
+                    <li>
+                      <strong className="text-[var(--landing-brand-strong)]">Strict Prohibition:</strong> The sale, promotion, or distribution of any illegal, counterfeit, or regulated illicit products using the Super Vendor platform is strictly prohibited. Violation of this clause will result in immediate termination.
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-[var(--landing-brand-strong)] text-base">
+                    4. Billing, Termination, and Data Access
+                  </h3>
+                  <p className="mt-2">
+                    Access to Super Vendor is contingent upon your timely payment for our services.
+                  </p>
+                  <ul className="mt-3 space-y-2 list-disc list-inside pl-2">
+                    <li>
+                      <strong className="text-[var(--landing-brand-strong)]">Right to Terminate:</strong> If you fail to pay for your subscription or service fees, we reserve the right to immediately suspend or terminate your account without prior notice.
+                    </li>
+                    <li>
+                      <strong className="text-[var(--landing-brand-strong)]">Loss of Data Access:</strong> Upon account termination due to non-payment or policy violation, you will immediately lose all access to your account and your data.
+                    </li>
+                    <li>
+                      <strong className="text-[var(--landing-brand-strong)]">Data Responsibility Post-Termination:</strong> Super Vendor is not responsible for storing, retrieving, or transferring your data once your account has been terminated.
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-[var(--landing-brand-strong)] text-base">
+                    5. Subscription Pricing and Fair Usage
+                  </h3>
+                  <ul className="mt-3 space-y-2 list-disc list-inside pl-2">
+                    <li>
+                      <strong className="text-[var(--landing-brand-strong)]">Price Increases:</strong> We reserve the right to increase your monthly subscription charges. You will be provided with a thirty (30) day prior notice before any new pricing takes effect.
+                    </li>
+                    <li>
+                      <strong className="text-[var(--landing-brand-strong)]">Mandatory Upgrades:</strong> Our lowest subscription tiers are designed for standard usage. If you are on the lowest subscription plan and we determine that your account is using our system heavily or utilizing excessive resources, we reserve the right to force an upgrade to a higher subscription tier.
+                    </li>
+                    <li>
+                      <strong className="text-[var(--landing-brand-strong)]">Refusal to Upgrade:</strong> If you refuse to comply with a mandatory upgrade due to heavy usage, we retain the right to terminate your account immediately and you will lose access to your data, as outlined in Section 4.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 flex justify-end border-t border-black/5 pt-6">
+              <button
+                onClick={() => setTermsOpen(false)}
+                className="inline-flex items-center justify-center rounded-full bg-[var(--landing-brand-strong)] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[var(--landing-brand-strong)]/90"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       ) : null}
     </div>
   );
