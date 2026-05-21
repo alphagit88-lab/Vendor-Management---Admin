@@ -29,7 +29,11 @@ export default function Login() {
       if (data.success) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        router.push('/dashboard');
+        if (data.user.role === 'super_admin') {
+          router.push('/superadmin/dashboard');
+        } else {
+          router.push('/dashboard');
+        }
       } else {
         setError(data.message || 'Login failed');
       }
