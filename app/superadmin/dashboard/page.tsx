@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { Users, Store, Package, Activity, ArrowUpRight, ShoppingCart, LayoutDashboard, Download, ShieldAlert } from 'lucide-react';
+import { Users, Store, Package, Activity, ArrowUpRight, ShoppingCart, LayoutDashboard, ShieldAlert } from 'lucide-react';
 import { API_URL } from '@/lib/config';
 
 export default function SuperAdminDashboardPage() {
