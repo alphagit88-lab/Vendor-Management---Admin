@@ -723,70 +723,6 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="hardware" className="scroll-mt-32 px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
-          <div className="mx-auto max-w-7xl">
-            <div className="grid gap-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-              <div data-reveal="left" className="relative overflow-hidden rounded-[2.4rem] border border-black/6 bg-white shadow-[0_28px_80px_rgba(17,32,51,0.16)]">
-                <div className="relative aspect-square bg-white">
-                  <Image
-                    src={image3}
-                    alt="Three panels showing delivery driver by a van, checking inventory inside the van, and printing an invoice at a store counter."
-                    fill
-                    placeholder="blur"
-                    sizes="(min-width: 1024px) 38vw, 100vw"
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-
-              <div data-reveal="right">
-                <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[var(--landing-accent)]">
-                  Why SuperVendor?
-                </p>
-                <h2 className="mt-4 max-w-[12ch] font-[family:var(--font-space-grotesk)] text-4xl font-bold leading-[0.95] tracking-[-0.06em] text-[var(--landing-brand-strong)] sm:text-5xl">
-                  Faster stops. Clearer invoices.
-                </h2>
-                <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--landing-muted)]">
-                  It keeps delivery simple from the vehicle to the counter.
-                </p>
-
-                <div className="mt-8 space-y-5">
-                  {reasons.map((reason, index) => (
-                    <div
-                      key={reason.title}
-                      data-reveal="right"
-                      style={{ transitionDelay: `${index * 110}ms` }}
-                      className="flex items-start gap-4 rounded-[1.8rem] border border-black/6 bg-white px-5 py-5 shadow-[0_16px_40px_rgba(17,32,51,0.05)]"
-                    >
-                      <div className="mt-0.5 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--landing-accent)] text-white shadow-[0_14px_32px_rgba(200,108,73,0.22)]">
-                        <Check className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-semibold text-[var(--landing-brand-strong)]">{reason.title}</h3>
-                        <p className="mt-2 text-sm leading-7 text-[var(--landing-muted)]">{reason.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-8 rounded-[1.9rem] border border-[var(--landing-accent-soft)] bg-[var(--landing-surface)] p-6 shadow-[0_18px_42px_rgba(17,32,51,0.05)]">
-                  <div className="flex items-start gap-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[var(--landing-brand-strong)] text-white">
-                      <ShieldCheck className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-[var(--landing-brand-strong)]">Built to stay simple</p>
-                      <p className="mt-2 text-sm leading-7 text-[var(--landing-muted)]">
-                        Drivers, stores, and invoices stay connected in one simple flow.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <section id="how-it-works" className="scroll-mt-32 px-4 pb-20 pt-4 sm:px-6 lg:px-8 lg:pb-24">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-3xl text-center" data-reveal="zoom">
@@ -847,6 +783,70 @@ export default function Home() {
                   </article>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="hardware" className="scroll-mt-32 px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
+          <div className="mx-auto max-w-7xl">
+            <div className="grid gap-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+              <div data-reveal="left" className="relative overflow-hidden rounded-[2.4rem] border border-black/6 bg-white shadow-[0_28px_80px_rgba(17,32,51,0.16)]">
+                <div className="relative aspect-square bg-white">
+                  <Image
+                    src={image3}
+                    alt="Three panels showing delivery driver by a van, checking inventory inside the van, and printing an invoice at a store counter."
+                    fill
+                    placeholder="blur"
+                    sizes="(min-width: 1024px) 38vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+
+              <div data-reveal="right">
+                <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[var(--landing-accent)]">
+                  Why SuperVendor?
+                </p>
+                <h2 className="mt-4 max-w-[12ch] font-[family:var(--font-space-grotesk)] text-4xl font-bold leading-[0.95] tracking-[-0.06em] text-[var(--landing-brand-strong)] sm:text-5xl">
+                  Faster stops. Clearer invoices.
+                </h2>
+                <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--landing-muted)]">
+                  It keeps delivery simple from the vehicle to the counter.
+                </p>
+
+                <div className="mt-8 space-y-5">
+                  {reasons.map((reason, index) => (
+                    <div
+                      key={reason.title}
+                      data-reveal="right"
+                      style={{ transitionDelay: `${index * 110}ms` }}
+                      className="flex items-start gap-4 rounded-[1.8rem] border border-black/6 bg-white px-5 py-5 shadow-[0_16px_40px_rgba(17,32,51,0.05)]"
+                    >
+                      <div className="mt-0.5 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--landing-accent)] text-white shadow-[0_14px_32px_rgba(200,108,73,0.22)]">
+                        <Check className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-semibold text-[var(--landing-brand-strong)]">{reason.title}</h3>
+                        <p className="mt-2 text-sm leading-7 text-[var(--landing-muted)]">{reason.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-8 rounded-[1.9rem] border border-[var(--landing-accent-soft)] bg-[var(--landing-surface)] p-6 shadow-[0_18px_42px_rgba(17,32,51,0.05)]">
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[var(--landing-brand-strong)] text-white">
+                      <ShieldCheck className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-[var(--landing-brand-strong)]">Built to stay simple</p>
+                      <p className="mt-2 text-sm leading-7 text-[var(--landing-muted)]">
+                        Drivers, stores, and invoices stay connected in one simple flow.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
