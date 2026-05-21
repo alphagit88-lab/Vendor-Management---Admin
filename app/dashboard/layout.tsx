@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { LayoutDashboard, Users, Store, Package, LogOut, ChevronRight, UserCircle, ShoppingCart, Boxes, ClipboardList, Layers, Settings } from 'lucide-react';
+import { LayoutDashboard, Users, Store, Package, LogOut, UserCircle, ShoppingCart, Boxes, ClipboardList, Layers, Settings } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -17,11 +17,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (!token) {
       router.push('/login');
     } else {
-      // Decode JWT safely
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
-        setUser({ name: payload.name || 'Admin', role: payload.role || 'Admin' });
-      } catch (e) { }
+        if (payload.role === 'super_admin') {
+          router.push('/superadmin/dashboard');
+        } else {
+          setUser({ name: payload.name || 'Admin', role: payload.role || 'Admin' });
+        }
+      } catch (e) {
+        router.push('/login');
+      }
     }
   }, [router]);
 
@@ -99,6 +104,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <button
             onClick={() => {
               localStorage.removeItem('token');
+              localStorage.removeItem('user');
               router.push('/login');
             }}
             className="w-full flex items-center justify-center gap-2 bg-white border border-gray-200 hover:bg-red-50 hover:text-red-600 hover:border-red-100 px-4 py-2 rounded-lg text-[11px] font-black uppercase tracking-widest text-slate-600 transition-all duration-200 shadow-sm"

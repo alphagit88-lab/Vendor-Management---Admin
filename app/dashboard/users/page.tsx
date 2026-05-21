@@ -39,8 +39,8 @@ export default function UsersPage() {
   }, []);
 
   const filteredUsers = users.filter(u => {
-    // Exclude admins from the staff directory view
-    if (u.role === 'admin') return false;
+    // Only include staff members for standard admins
+    if (u.role !== 'staff') return false;
 
     const term = searchTerm.toLowerCase();
     return (
@@ -58,13 +58,16 @@ export default function UsersPage() {
       const url = isEdit ? `${API_URL}/users/${editId}` : `${API_URL}/users`;
       const method = isEdit ? 'PUT' : 'POST';
       
+      // Ensure the role is always forced to staff
+      const requestData = { ...formData, role: 'staff' };
+      
       const res = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(requestData)
       });
       const data = await res.json();
       if (data.success) {
@@ -91,7 +94,7 @@ export default function UsersPage() {
       phone: user.phone,
       email: user.email || '',
       password: '',
-      role: user.role,
+      role: 'staff',
       inventory_location: user.inventory_location || ''
     });
     setEditId(user.id);
@@ -158,8 +161,12 @@ export default function UsersPage() {
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div>
-          <h1 className="text-[30px] leading-none font-bold text-slate-900 tracking-tight">Staff Directory</h1>
-          <p className="text-slate-500 mt-1 text-sm font-medium">Manage members and system access roles.</p>
+          <h1 className="text-[30px] leading-none font-bold text-slate-900 tracking-tight">
+            Staff Directory
+          </h1>
+          <p className="text-slate-500 mt-1 text-sm font-medium">
+            Manage members and system access roles.
+          </p>
         </div>
         <button
           onClick={() => {
@@ -249,7 +256,7 @@ export default function UsersPage() {
               ))}
             </tbody>
           </table>
-          {users.length === 0 && !loading && (
+          {filteredUsers.length === 0 && !loading && (
             <div className="p-16 text-center flex flex-col items-center">
               <UserPlus className="w-12 h-12 text-slate-300 mb-4" />
               <h3 className="text-lg font-bold text-slate-900">No staff members yet</h3>
@@ -278,23 +285,26 @@ export default function UsersPage() {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="px-8 py-6 space-y-6 flex-1 overflow-y-auto font-medium">
+             <form onSubmit={handleSubmit} autoComplete="off" className="px-8 py-6 space-y-6 flex-1 overflow-y-auto font-medium">
+              {/* Dummy inputs to prevent Chrome autofill */}
+              <input type="text" name="chrome-autofill-dummy-username" style={{ position: 'absolute', top: '-1000px', left: '-1000px', width: '1px', height: '1px', opacity: 0 }} tabIndex={-1} readOnly />
+              <input type="password" name="chrome-autofill-dummy-password" style={{ position: 'absolute', top: '-1000px', left: '-1000px', width: '1px', height: '1px', opacity: 0 }} tabIndex={-1} readOnly />
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-[11px] font-black text-slate-500 mb-1.5 uppercase tracking-widest">Full Name</label>
-                  <input type="text" className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium" placeholder="Jane Doe" required
+                  <input type="text" autoComplete="off" className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium" placeholder="Jane Doe" required
                     value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-[11px] font-black text-slate-500 mb-1.5 uppercase tracking-widest">Email Address <span className="text-rose-500">*</span></label>
-                    <input type="email" className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium" placeholder="jane@company.com" required
-                      value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
-
+                    <input type="email" autoComplete="off" className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium" placeholder="jane@company.com" required
+                    value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
                   </div>
                   <div>
                     <label className="block text-[11px] font-black text-slate-500 mb-1.5 uppercase tracking-widest">Phone</label>
-                    <input type="text" className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium" placeholder="(555) 000-0000" required
+                    <input type="text" autoComplete="off" className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium" placeholder="e.g. 0771234567" required
                       value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
                   </div>
                 </div>
@@ -311,12 +321,13 @@ export default function UsersPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-black text-slate-500 mb-1.5 uppercase tracking-widest">{isEdit ? 'Update Password' : 'Secure Temporary Password'}</label>
+                  <label className="block text-[11px] font-black text-slate-500 mb-1.5 uppercase tracking-widest">{isEdit ? 'Update Password (leave blank to keep unchanged)' : 'Secure Temporary Password'}</label>
                   <div className="relative">
                     <input 
                       type={showPassword ? 'text' : 'password'} 
+                      autoComplete="new-password"
                       className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-mono" 
-                      placeholder={isEdit ? "Enter new password to change..." : "••••••••"} 
+                      placeholder={isEdit ? "••••••••" : "••••••••"} 
                       required={!isEdit}
                       value={formData.password} 
                       onChange={e => setFormData({ ...formData, password: e.target.value })} 
