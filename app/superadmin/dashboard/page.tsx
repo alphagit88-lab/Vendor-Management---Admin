@@ -98,14 +98,6 @@ export default function SuperAdminDashboardPage() {
           <p className="text-slate-400 mt-1 text-sm font-medium">Welcome back, System Owner. Here's your global console view.</p>
         </div>
         <div className="flex items-center gap-4">
-          <a
-            href="/SuperVendor_latest_version.apk"
-            download
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold uppercase tracking-widest transition-all active:scale-95 shadow-md shadow-indigo-900/30"
-          >
-            <Download className="w-4 h-4" />
-            <span>DOWNLOAD ANDROID CLIENT</span>
-          </a>
           <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-full text-xs font-medium text-slate-300 shadow-inner">
             <Activity className="w-4 h-4 text-emerald-500 animate-pulse" />
             <span>Core Engines Operational</span>
@@ -152,15 +144,14 @@ export default function SuperAdminDashboardPage() {
             activities.map((item, idx) => (
               <div key={idx} className="p-4 hover:bg-slate-800/30 transition-colors flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
-                  <div className={`p-2.5 rounded-xl border ${
-                    item.type === 'user'
+                  <div className={`p-2.5 rounded-xl border ${item.type === 'user'
                       ? item.role === 'admin'
                         ? 'bg-violet-950/40 text-violet-400 border-violet-900/40'
                         : 'bg-blue-950/40 text-blue-400 border-blue-900/40'
                       : item.type === 'customer'
                         ? 'bg-emerald-950/40 text-emerald-400 border-emerald-900/40'
                         : 'bg-amber-950/40 text-amber-400 border-amber-900/40'
-                  }`}>
+                    }`}>
                     {item.type === 'user' ? (
                       item.role === 'admin' ? <ShieldAlert className="w-5 h-5" /> : <Users className="w-5 h-5" />
                     ) : item.type === 'customer' ? (

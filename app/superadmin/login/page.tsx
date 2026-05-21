@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { ArrowRight, Lock, Phone, Eye, EyeOff, ShieldAlert } from 'lucide-react';
+import { ArrowRight, Lock, User, Eye, EyeOff, ShieldAlert } from 'lucide-react';
 import { API_URL } from '@/lib/config';
 
 export default function SuperAdminLogin() {
   const router = useRouter();
-  const [phone, setPhone] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ export default function SuperAdminLogin() {
       const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, password })
+        body: JSON.stringify({ username, password })
       });
       const data = await res.json();
       if (data.success) {
@@ -116,18 +116,18 @@ export default function SuperAdminLogin() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">Superadmin Phone</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wider">Username</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <Phone className="h-4 w-4 text-slate-400" />
+                    <User className="h-4 w-4 text-slate-400" />
                   </div>
                   <input
                     type="text"
                     required
                     className="block w-full pl-11 pr-3 py-3 bg-slate-900/60 border border-slate-800 rounded-2xl text-sm text-white shadow-inner placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                    placeholder="Enter superadmin phone number"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="Enter superadmin username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
               </div>
