@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { LayoutDashboard, Users, LogOut, ShieldAlert, Settings } from 'lucide-react';
+import { LayoutDashboard, Users, LogOut, ShieldAlert, Settings, Zap } from 'lucide-react';
 
 export default function SuperAdminDashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -36,6 +36,7 @@ export default function SuperAdminDashboardLayout({ children }: { children: Reac
   const navLinks = [
     { name: 'Root Dashboard', href: '/superadmin/dashboard', icon: LayoutDashboard },
     { name: 'User Management', href: '/superadmin/dashboard/users', icon: Users },
+    { name: 'Subscription Plans', href: '/superadmin/dashboard/subscription-plans', icon: Zap },
   ];
 
   return (

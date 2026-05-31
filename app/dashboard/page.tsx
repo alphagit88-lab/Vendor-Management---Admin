@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { Users, Store, Package, Activity, ArrowUpRight, ShoppingCart, LayoutDashboard, Download } from 'lucide-react';
+import { Users, Store, Package, Activity, ArrowUpRight, ShoppingCart, LayoutDashboard, Download, Zap, Package2 } from 'lucide-react';
+import { API_URL } from '@/lib/config';
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<any>({
@@ -11,25 +12,28 @@ export default function DashboardPage() {
     orders: { value: 0, change: '0%' }
   });
   const [activities, setActivities] = useState<any[]>([]);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
-      const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
       const token = localStorage.getItem('token');
       const headers = { 'Authorization': `Bearer ${token}` };
 
       try {
-        const [statsRes, activityRes] = await Promise.all([
-          fetch(`${BASE_URL}/dashboard/stats`, { headers }),
-          fetch(`${BASE_URL}/dashboard/activities`, { headers })
+        const [statsRes, activityRes, userRes] = await Promise.all([
+          fetch(`${API_URL}/dashboard/stats`, { headers }),
+          fetch(`${API_URL}/dashboard/activities`, { headers }),
+          fetch(`${API_URL}/users/me`, { headers })
         ]);
 
         const statsData = await statsRes.json();
         const activityData = await activityRes.json();
+        const userData = await userRes.json();
 
         if (statsData.success) setStats(statsData.data);
         if (activityData.success) setActivities(activityData.data);
+        if (userData.success) setCurrentUser(userData.data);
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
       } finally {
@@ -96,6 +100,11 @@ export default function DashboardPage() {
           <p className="text-slate-500 mt-1 text-sm font-medium">Welcome back! Here's what's happening today.</p>
         </div>
         <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-full text-xs font-medium text-slate-600 shadow-sm">
+            <Activity className="w-4 h-4 text-emerald-500" />
+            <span>System Healthy</span>
+          </div>
+          
           <a
             href="/SuperVendor_latest_version.apk"
             download
@@ -104,10 +113,25 @@ export default function DashboardPage() {
             <Download className="w-4 h-4" />
             <span>DOWNLOAD LATEST ANDROID APP</span>
           </a>
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 rounded-full text-xs font-medium text-slate-600 shadow-sm">
-            <Activity className="w-4 h-4 text-emerald-500" />
-            <span>System Healthy</span>
-          </div>
+          
+          {/* Subscription Plan Widget */}
+          {currentUser?.subscription_plan && (
+            <div className="flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-cyan-500 via-teal-500 to-emerald-500 text-white rounded-full text-xs font-medium shadow-lg shadow-teal-200">
+              <Zap className="w-4 h-4" />
+              <div className="flex flex-col leading-tight">
+                <span className="font-bold text-amber-400">{currentUser.subscription_plan.name}</span>
+                <span className="text-cyan-100">
+                  {currentUser.current_product_count}/{currentUser.subscription_plan.product_limit} Products • {currentUser.current_sales_person_count}/{currentUser.subscription_plan.sales_person_limit} Staff
+                </span>
+              </div>
+            </div>
+          )}
+          {!currentUser?.subscription_plan && (
+            <div className="flex items-center gap-3 px-4 py-2 bg-slate-100 text-slate-600 border border-slate-200 rounded-full text-xs font-medium">
+              <Zap className="w-4 h-4" />
+              <span>No Subscription Plan</span>
+            </div>
+          )}
         </div>
       </div>
 

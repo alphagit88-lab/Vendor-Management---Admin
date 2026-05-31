@@ -6,8 +6,9 @@ import { API_URL } from '@/lib/config';
 
 export default function SuperAdminUsersPage() {
   const [users, setUsers] = useState<any[]>([]);
+  const [plans, setPlans] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '', admin_id: '' });
+  const [formData, setFormData] = useState({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '', admin_id: '', enable_par_levels: true, subscription_plan_id: '' });
   const [loading, setLoading] = useState(true);
   const [isEdit, setIsEdit] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
@@ -21,21 +22,33 @@ export default function SuperAdminUsersPage() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch(`${API_URL}/users`, {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-      });
-      const data = await res.json();
-      if (data.success) {
-        setUsers(data.data);
+      const [usersRes, plansRes] = await Promise.all([
+        fetch(`${API_URL}/users`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        }),
+        fetch(`${API_URL}/subscription-plans`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        })
+      ]);
+      
+      const usersData = await usersRes.json();
+      const plansData = await plansRes.json();
+      
+      if (usersData.success) {
+        setUsers(usersData.data);
         
         setActiveAdminId(prev => {
           if (prev !== null) return prev;
-          const firstAdmin = data.data.find((u: any) => u.role === 'admin');
+          const firstAdmin = usersData.data.find((u: any) => u.role === 'admin');
           return firstAdmin ? firstAdmin.id : 'unassigned';
         });
       }
+      
+      if (plansData.success) {
+        setPlans(plansData.data);
+      }
     } catch (err) {
-      console.error("Error fetching users:", err);
+      console.error("Error fetching data:", err);
     } finally {
       setLoading(false);
     }
@@ -104,7 +117,9 @@ export default function SuperAdminUsersPage() {
         ...formData,
         username: formData.role === 'admin' ? '' : formData.username,
         admin_id: formData.role === 'staff' && formData.admin_id ? parseInt(formData.admin_id) : null,
-        inventory_location: formData.role === 'admin' ? '' : formData.inventory_location
+        inventory_location: formData.role === 'admin' ? '' : formData.inventory_location,
+        enable_par_levels: formData.enable_par_levels,
+        subscription_plan_id: formData.role === 'admin' && formData.subscription_plan_id ? parseInt(formData.subscription_plan_id) : null
       };
       
       const res = await fetch(url, {
@@ -120,7 +135,7 @@ export default function SuperAdminUsersPage() {
         fetchUsers();
         setShowModal(false);
         setShowPassword(false);
-        setFormData({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '', admin_id: '' });
+        setFormData({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '', admin_id: '', enable_par_levels: true, subscription_plan_id: '' });
         setIsEdit(false);
         setEditId(null);
       } else {
@@ -142,7 +157,9 @@ export default function SuperAdminUsersPage() {
       password: '',
       role: user.role,
       inventory_location: user.inventory_location || '',
-      admin_id: user.admin_id ? String(user.admin_id) : ''
+      admin_id: user.admin_id ? String(user.admin_id) : '',
+      enable_par_levels: user.enable_par_levels ?? true,
+      subscription_plan_id: user.subscription_plan_id ? String(user.subscription_plan_id) : ''
     });
     setEditId(user.id);
     setIsEdit(true);
@@ -219,18 +236,18 @@ export default function SuperAdminUsersPage() {
           </p>
         </div>
         <button
-          onClick={() => {
-            setIsEdit(false);
-            setEditId(null);
-            setShowPassword(false);
-            setFormData({ name: '', phone: '', username: '', email: '', password: '', role: 'admin', inventory_location: '', admin_id: '' });
-            setShowModal(true);
-          }}
-          className="bg-indigo-600 shadow-lg shadow-indigo-900/30 text-white flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm hover:bg-indigo-500 transition-all font-semibold"
-        >
-          <Plus className="w-5 h-5" />
-          Add Administrator
-        </button>
+              onClick={() => {
+                setIsEdit(false);
+                setEditId(null);
+                setShowPassword(false);
+                setFormData({ name: '', phone: '', username: '', email: '', password: '', role: 'admin', inventory_location: '', admin_id: '', enable_par_levels: true, subscription_plan_id: '' });
+                setShowModal(true);
+              }}
+              className="bg-indigo-600 shadow-lg shadow-indigo-900/30 text-white flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm hover:bg-indigo-500 transition-all font-semibold"
+            >
+              <Plus className="w-5 h-5" />
+              Add Administrator
+            </button>
       </div>
 
       <div className="bg-slate-900 rounded-2xl border border-slate-800 p-4 mb-4 bg-slate-900/40">
@@ -296,6 +313,16 @@ export default function SuperAdminUsersPage() {
                   <div className="space-y-1.5 flex-1 min-w-0 pr-2">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-bold text-slate-200 truncate">{admin.name}</span>
+                      {admin.enable_par_levels !== false ? (
+                        <span className="text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-1.5 py-0.5 rounded-full font-bold">Par Levels On</span>
+                      ) : (
+                        <span className="text-[10px] bg-slate-800 text-slate-500 border border-slate-700 px-1.5 py-0.5 rounded-full font-bold">Par Levels Off</span>
+                      )}
+                    </div>
+                    <div className="text-xs text-slate-500 mt-1">
+                      {admin.subscription_plan_id 
+                        ? `Plan: ${plans.find(p => p.id === admin.subscription_plan_id)?.name || 'Unknown'}`
+                        : 'No Subscription Plan'}
                     </div>
                     <div className="text-xs text-slate-400 font-medium truncate">{admin.phone}</div>
                     <div className="text-xs text-slate-500 font-medium truncate">{admin.email || '—'}</div>
@@ -371,7 +398,9 @@ export default function SuperAdminUsersPage() {
                   password: '', 
                   role: 'staff', 
                   inventory_location: '', 
-                  admin_id: typeof activeAdminId === 'number' ? String(activeAdminId) : '' 
+                  admin_id: typeof activeAdminId === 'number' ? String(activeAdminId) : '',
+                  enable_par_levels: true,
+                  subscription_plan_id: '' 
                 });
                 setShowModal(true);
               }}
@@ -491,7 +520,8 @@ export default function SuperAdminUsersPage() {
                           role: newRole,
                           admin_id: newRole === 'admin' ? '' : formData.admin_id,
                           inventory_location: newRole === 'admin' ? '' : formData.inventory_location,
-                          username: newRole === 'admin' ? '' : formData.username
+                          username: newRole === 'admin' ? '' : formData.username,
+                          enable_par_levels: formData.enable_par_levels
                         });
                       }}
                       disabled={isEdit}
@@ -569,6 +599,40 @@ export default function SuperAdminUsersPage() {
                       onChange={e => setFormData({ ...formData, inventory_location: e.target.value })} 
                     />
                   </div>
+                )}
+
+                {formData.role === 'admin' && (
+                  <>
+                    <div className="flex items-center justify-between p-3 bg-slate-950 rounded-lg border border-slate-800">
+                      <div className="flex flex-col">
+                        <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Enable Par Level Management</label>
+                        <span className="text-[10px] text-slate-500">Allow this admin to set and manage customer par levels</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, enable_par_levels: !formData.enable_par_levels })}
+                        className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${formData.enable_par_levels ? 'bg-indigo-600' : 'bg-slate-700'}`}
+                      >
+                        <span
+                          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${formData.enable_par_levels ? 'translate-x-5' : 'translate-x-0'}`}
+                        />
+                      </button>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-widest">Subscription Plan</label>
+                      <select
+                        className="w-full px-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium"
+                        value={formData.subscription_plan_id}
+                        onChange={e => setFormData({ ...formData, subscription_plan_id: e.target.value })}
+                      >
+                        <option value="">No Subscription Plan</option>
+                        {plans.map(plan => (
+                          <option key={plan.id} value={plan.id}>{plan.name} (Products: {plan.product_limit}, Salespersons: {plan.sales_person_limit})</option>
+                        ))}
+                      </select>
+                    </div>
+                  </>
                 )}
 
                 <div>

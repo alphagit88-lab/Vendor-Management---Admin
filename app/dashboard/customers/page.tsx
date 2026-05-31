@@ -41,6 +41,31 @@ export default function CustomersPage() {
   const [selectedItemCategory, setSelectedItemCategory] = useState<number | 'all'>('all');
   const [parLevels, setParLevels] = useState<Record<number, string>>({});
   const [isSavingPars, setIsSavingPars] = useState(false);
+  const [enableParLevels, setEnableParLevels] = useState(false);
+  
+  // Get enable_par_levels from backend
+  const refreshUserStatus = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setEnableParLevels(false);
+        return;
+      }
+      
+      const res = await fetch(`${API_URL}/users/me`, { 
+        headers: { 'Authorization': `Bearer ${token}` } 
+      });
+      const data = await res.json();
+      if (data.success) {
+        const isEnabled = data.data.role === 'super_admin' || (data.data.enable_par_levels === true);
+        setEnableParLevels(isEnabled);
+      } else {
+        setEnableParLevels(false);
+      }
+    } catch (err) {
+      setEnableParLevels(false);
+    }
+  };
 
   const fetchCustomers = async () => {
     try {
@@ -63,6 +88,7 @@ export default function CustomersPage() {
   };
 
   useEffect(() => {
+    refreshUserStatus();
     fetchCustomers();
   }, []);
 
@@ -141,6 +167,15 @@ export default function CustomersPage() {
   };
 
   const handleOpenParModal = async (customer: any) => {
+    // Refresh user status first
+    await refreshUserStatus();
+    
+    // Check if par levels are enabled before opening modal
+    if (!enableParLevels) {
+      alert("Par level management has been disabled for your account.");
+      return;
+    }
+    
     setSelectedParCustomer(customer);
     setParLevels(customer.par_levels || {});
     setShowParModal(true);
@@ -183,6 +218,11 @@ export default function CustomersPage() {
         fetchCustomers();
       } else {
         alert(data.message);
+        // If par levels are disabled, refresh the status and close modal
+        if (data.message && data.message.includes('Par level management is disabled')) {
+          await refreshUserStatus();
+          setShowParModal(false);
+        }
       }
     } catch (err) {
       alert("Error saving par levels");
@@ -393,13 +433,15 @@ export default function CustomersPage() {
                   </td>
                   <td className="px-6 py-3 whitespace-nowrap text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <button
-                        onClick={() => handleOpenParModal(c)}
-                        className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium"
-                        title="Set Par Levels"
-                      >
-                        <Target className="w-4 h-4" />
-                      </button>
+                      {enableParLevels && (
+                        <button
+                          onClick={() => handleOpenParModal(c)}
+                          className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium"
+                          title="Set Par Levels"
+                        >
+                          <Target className="w-4 h-4" />
+                        </button>
+                      )}
                       <button
                         onClick={() => handleEdit(c)}
                         className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all font-medium"
