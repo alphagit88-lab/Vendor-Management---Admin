@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { ArrowRight, Lock, Phone, Eye, EyeOff, Mail, User, X, CheckCircle2 } from 'lucide-react';
 import { API_URL } from '@/lib/config';
 
-export default function Login() {
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [showRegister, setShowRegister] = useState(false);
   const [registerSuccess, setRegisterSuccess] = useState(false);
   
@@ -44,6 +45,15 @@ export default function Login() {
     };
     loadPlans();
   }, []);
+
+  // Check for plan query parameter
+  useEffect(() => {
+    const planId = searchParams.get('plan');
+    if (planId) {
+      setRegisterSubscriptionPlanId(planId);
+      setShowRegister(true);
+    }
+  }, [searchParams]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -372,5 +382,13 @@ export default function Login() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center">Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

@@ -312,7 +312,7 @@ export default function Home() {
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [plans]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -869,7 +869,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="pricing" className="scroll-mt-32 px-4 py-20 sm:px-6 lg:px-8 lg:py-24 bg-[var(--landing-surface-strong)]">
+        <section id="pricing" className="scroll-mt-32 px-4 py-20 sm:px-6 lg:px-8 lg:py-24 bg-gradient-to-br from-[var(--landing-surface)] via-[var(--landing-surface-strong)] to-[var(--landing-bg)]">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto max-w-4xl text-center" data-reveal="zoom">
               <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[var(--landing-accent)]">
@@ -886,21 +886,26 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="mt-16 grid gap-8 md:grid-cols-3 max-w-6xl mx-auto items-stretch">
-              {plans.map((plan, index) => {
-                const isPopular = plans.length > 1 && index === 1;
-                const price = Number(plan.price || 0);
-                
-                return (
-                  <div 
-                    key={plan.id} 
-                    data-reveal={index === 0 ? 'left' : index === plans.length - 1 ? 'right' : 'zoom'}
-                    className={`relative rounded-[2.2rem] border p-8 shadow-[0_24px_64px_rgba(17,32,51,0.08)] flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-xl overflow-hidden ${
-                      isPopular 
-                        ? 'border-[var(--landing-accent)] bg-[var(--landing-brand-strong)] text-white' 
-                        : 'border-black/6 bg-white'
-                    }`}
-                  >
+            <div className="mt-16 flex flex-wrap justify-center gap-8 max-w-6xl mx-auto items-stretch">
+              {plans.length === 0 ? (
+                <div className="text-center py-20 w-full">
+                  <p className="text-lg text-[var(--landing-muted)]">Loading pricing plans...</p>
+                </div>
+              ) : (
+                plans.map((plan, index) => {
+                  const isPopular = plans.length > 1 && index === 1;
+                  const price = Number(plan.price || 0);
+                  
+                  return (
+                    <div 
+                      key={plan.id} 
+                      data-reveal="zoom"
+                      className={`relative w-full md:w-[calc(33.333%-1.5rem)] lg:w-[calc(33.333%-1.75rem)] max-w-sm rounded-[2.2rem] border p-8 shadow-[0_24px_64px_rgba(17,32,51,0.08)] flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl overflow-hidden ${
+                        isPopular 
+                          ? 'border-[var(--landing-accent)] bg-[var(--landing-brand-strong)] text-white' 
+                          : 'border-black/6 bg-white/80 backdrop-blur-sm'
+                      }`}
+                    >
                     {isPopular && (
                       <div className="absolute right-0 top-0 bg-[var(--landing-accent)] text-white text-[0.65rem] font-bold uppercase tracking-wider px-5 py-2 rounded-bl-2xl">
                         Popular
@@ -947,7 +952,7 @@ export default function Home() {
                     
                     <div className="mt-8">
                       <Link
-                        href="/login"
+                        href={`/login?plan=${plan.id}`}
                         className={`w-full inline-flex items-center justify-center rounded-full py-3.5 text-sm font-semibold transition ${
                           isPopular 
                             ? 'bg-[var(--landing-accent)] text-white shadow-lg hover:bg-[var(--landing-accent)]/90' 
@@ -959,7 +964,8 @@ export default function Home() {
                     </div>
                   </div>
                 );
-              })}
+              })
+              )}
             </div>
           </div>
         </section>
