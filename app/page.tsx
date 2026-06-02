@@ -3,6 +3,7 @@
 import type { CSSProperties } from 'react';
 import { startTransition, useEffect, useEffectEvent, useState } from 'react';
 import Image, { type StaticImageData } from 'next/image';
+import { API_URL } from '@/lib/config';
 import Link from 'next/link';
 import { Space_Grotesk } from 'next/font/google';
 import {
@@ -242,6 +243,23 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showTopButton, setShowTopButton] = useState(false);
   const [termsOpen, setTermsOpen] = useState(false);
+  const [plans, setPlans] = useState<any[]>([]);
+
+  // Fetch subscription plans
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const res = await fetch(`${API_URL}/subscription-plans/public`);
+        const data = await res.json();
+        if (data.success) {
+          setPlans(data.data);
+        }
+      } catch (err) {
+        console.error('Failed to load subscription plans:', err);
+      }
+    };
+    fetchPlans();
+  }, []);
 
   const advanceSlide = useEffectEvent((direction: 1 | -1 = 1) => {
     startTransition(() => {
@@ -869,119 +887,79 @@ export default function Home() {
             </div>
 
             <div className="mt-16 grid gap-8 md:grid-cols-3 max-w-6xl mx-auto items-stretch">
-              <div data-reveal="left" className="relative rounded-[2.2rem] border border-black/6 bg-white p-8 shadow-[0_24px_64px_rgba(17,32,51,0.08)] flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-xl">
-                <div>
-                  <h3 className="text-2xl font-bold text-[var(--landing-brand-strong)] font-[family:var(--font-space-grotesk)]">Small Vendor Package</h3>
-                  <p className="mt-4 text-sm text-[var(--landing-muted)] min-h-[48px]">Designed specifically for small vendors looking to streamline their daily operations.</p>
-                  <p className="mt-6">
-                    <span className="text-5xl font-bold tracking-tight text-[var(--landing-brand-strong)] font-[family:var(--font-space-grotesk)]">$59.99</span>
-                    <span className="text-sm font-semibold text-[var(--landing-muted)]">/month</span>
-                  </p>
-                  <ul className="mt-8 space-y-4 text-sm text-[var(--landing-brand-strong)]">
-                    <li className="flex items-start gap-3">
-                      <Check className="h-4 w-4 text-[var(--landing-highlight)] shrink-0 mt-1" />
-                      <span><strong>Customers:</strong> Manage up to 200 customers</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check className="h-4 w-4 text-[var(--landing-highlight)] shrink-0 mt-1" />
-                      <span><strong>Products:</strong> Track up to 150 products</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check className="h-4 w-4 text-[var(--landing-highlight)] shrink-0 mt-1" />
-                      <span><strong>Logistics:</strong> Manage up to 3 delivery vans</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check className="h-4 w-4 text-[var(--landing-highlight)] shrink-0 mt-1" />
-                      <span><strong>Storage:</strong> Supports 1 warehouse location</span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="mt-8">
-                  <Link
-                    href="/login"
-                    className="w-full inline-flex items-center justify-center rounded-full border border-black/10 bg-white/50 py-3.5 text-sm font-semibold text-[var(--landing-brand-strong)] transition hover:bg-[var(--landing-accent-soft)]"
+              {plans.map((plan, index) => {
+                const isPopular = plans.length > 1 && index === 1;
+                const price = Number(plan.price || 0);
+                
+                return (
+                  <div 
+                    key={plan.id} 
+                    data-reveal={index === 0 ? 'left' : index === plans.length - 1 ? 'right' : 'zoom'}
+                    className={`relative rounded-[2.2rem] border p-8 shadow-[0_24px_64px_rgba(17,32,51,0.08)] flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-xl overflow-hidden ${
+                      isPopular 
+                        ? 'border-[var(--landing-accent)] bg-[var(--landing-brand-strong)] text-white' 
+                        : 'border-black/6 bg-white'
+                    }`}
                   >
-                    Get Started
-                  </Link>
-                </div>
-              </div>
-
-              <div data-reveal="zoom" className="relative rounded-[2.2rem] border border-[var(--landing-accent)] bg-[var(--landing-brand-strong)] p-8 shadow-[0_24px_64px_rgba(17,32,51,0.16)] flex flex-col justify-between text-white overflow-hidden transition hover:-translate-y-1 hover:shadow-2xl">
-                <div className="absolute right-0 top-0 bg-[var(--landing-accent)] text-white text-[0.65rem] font-bold uppercase tracking-wider px-5 py-2 rounded-bl-2xl">
-                  Popular
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold font-[family:var(--font-space-grotesk)]">Pro Vendor Package</h3>
-                  <p className="mt-4 text-sm text-white/70 min-h-[48px]">Built for professional vendors who are scaling their reach and expanding their inventory.</p>
-                  <p className="mt-6">
-                    <span className="text-5xl font-bold tracking-tight font-[family:var(--font-space-grotesk)]">$119.99</span>
-                    <span className="text-sm font-semibold text-white/60">/month</span>
-                  </p>
-                  <ul className="mt-8 space-y-4 text-sm text-white/90">
-                    <li className="flex items-start gap-3">
-                      <Check className="h-4 w-4 text-[var(--landing-accent)] shrink-0 mt-1" />
-                      <span><strong>Customers:</strong> Manage up to 400 customers</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check className="h-4 w-4 text-[var(--landing-accent)] shrink-0 mt-1" />
-                      <span><strong>Products:</strong> Track up to 300 products (includes category management)</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check className="h-4 w-4 text-[var(--landing-accent)] shrink-0 mt-1" />
-                      <span><strong>Logistics:</strong> Manage up to 9 delivery vans</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check className="h-4 w-4 text-[var(--landing-accent)] shrink-0 mt-1" />
-                      <span><strong>Storage:</strong> Supports up to 3 warehouse locations</span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="mt-8">
-                  <Link
-                    href="/login"
-                    className="w-full inline-flex items-center justify-center rounded-full bg-[var(--landing-accent)] py-3.5 text-sm font-semibold text-white shadow-lg transition hover:bg-[var(--landing-accent)]/90"
-                  >
-                    Start Free Trial
-                  </Link>
-                </div>
-              </div>
-
-              <div data-reveal="right" className="relative rounded-[2.2rem] border border-black/6 bg-white p-8 shadow-[0_24px_64px_rgba(17,32,51,0.08)] flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-xl">
-                <div>
-                  <h3 className="text-2xl font-bold text-[var(--landing-brand-strong)] font-[family:var(--font-space-grotesk)]">Custom Enterprise</h3>
-                  <p className="mt-4 text-sm text-[var(--landing-muted)] min-h-[48px]">A fully tailored system for large companies needing absolute independence and limitless capacity.</p>
-                  <p className="mt-6">
-                    <span className="text-3xl font-bold tracking-tight text-[var(--landing-brand-strong)] font-[family:var(--font-space-grotesk)]">Contact Us</span>
-                    <span className="text-sm font-semibold text-[var(--landing-muted)]">/for pricing</span>
-                  </p>
-                  <ul className="mt-8 space-y-4 text-sm text-[var(--landing-brand-strong)]">
-                    <li className="flex items-start gap-3">
-                      <Check className="h-4 w-4 text-[var(--landing-highlight)] shrink-0 mt-1" />
-                      <span><strong>Capacity:</strong> Unlimited everything</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check className="h-4 w-4 text-[var(--landing-highlight)] shrink-0 mt-1" />
-                      <span><strong>Web Presence:</strong> Custom domain and full front-facing website</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check className="h-4 w-4 text-[var(--landing-highlight)] shrink-0 mt-1" />
-                      <span><strong>Experience:</strong> Advanced customer features and portals</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <Check className="h-4 w-4 text-[var(--landing-highlight)] shrink-0 mt-1" />
-                      <span><strong>Infrastructure:</strong> Dedicated custom app with hosting flexibility & complete data control</span>
-                    </li>
-                  </ul>
-                </div>
-                <div className="mt-8">
-                  <a
-                    href="#contact"
-                    className="w-full inline-flex items-center justify-center rounded-full border border-black/10 bg-white/50 py-3.5 text-sm font-semibold text-[var(--landing-brand-strong)] transition hover:bg-[var(--landing-accent-soft)]"
-                  >
-                    Contact us for pricing
-                  </a>
-                </div>
-              </div>
+                    {isPopular && (
+                      <div className="absolute right-0 top-0 bg-[var(--landing-accent)] text-white text-[0.65rem] font-bold uppercase tracking-wider px-5 py-2 rounded-bl-2xl">
+                        Popular
+                      </div>
+                    )}
+                    
+                    <div>
+                      <h3 className={`text-2xl font-bold font-[family:var(--font-space-grotesk)] ${
+                        isPopular ? 'text-white' : 'text-[var(--landing-brand-strong)]'
+                      }`}>{plan.name}</h3>
+                      
+                      <p className="mt-4 text-sm min-h-[48px]">
+                        Subscription plan with product and sales person limits
+                      </p>
+                      
+                      <p className="mt-6">
+                        <span className={`text-5xl font-bold tracking-tight font-[family:var(--font-space-grotesk)] ${
+                          isPopular ? 'text-white' : 'text-[var(--landing-brand-strong)]'
+                        }`}>
+                          ${price.toFixed(2)}
+                        </span>
+                        <span className={`text-sm font-semibold ${
+                          isPopular ? 'text-white/60' : 'text-[var(--landing-muted)]'
+                        }`}>/month</span>
+                      </p>
+                      
+                      <ul className={`mt-8 space-y-4 text-sm ${
+                        isPopular ? 'text-white/90' : 'text-[var(--landing-brand-strong)]'
+                      }`}>
+                        <li className="flex items-start gap-3">
+                          <Check className={`h-4 w-4 shrink-0 mt-1 ${
+                            isPopular ? 'text-[var(--landing-accent)]' : 'text-[var(--landing-highlight)]'
+                          }`} />
+                          <span><strong>Products:</strong> Up to {plan.product_limit} products</span>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <Check className={`h-4 w-4 shrink-0 mt-1 ${
+                            isPopular ? 'text-[var(--landing-accent)]' : 'text-[var(--landing-highlight)]'
+                          }`} />
+                          <span><strong>Sales Persons:</strong> Up to {plan.sales_person_limit} sales persons</span>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="mt-8">
+                      <Link
+                        href="/login"
+                        className={`w-full inline-flex items-center justify-center rounded-full py-3.5 text-sm font-semibold transition ${
+                          isPopular 
+                            ? 'bg-[var(--landing-accent)] text-white shadow-lg hover:bg-[var(--landing-accent)]/90' 
+                            : 'border border-black/10 bg-white/50 text-[var(--landing-brand-strong)] hover:bg-[var(--landing-accent-soft)]'
+                        }`}
+                      >
+                        Get Started
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>

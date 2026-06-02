@@ -11,7 +11,8 @@ export default function SubscriptionPlansPage() {
   const [formData, setFormData] = useState({ 
     name: '', 
     product_limit: '0', 
-    sales_person_limit: '0' 
+    sales_person_limit: '0',
+    price: '0.00'
   });
   const [loading, setLoading] = useState(true);
   const [isEdit, setIsEdit] = useState(false);
@@ -65,14 +66,15 @@ export default function SubscriptionPlansPage() {
         body: JSON.stringify({
           ...formData,
           product_limit: parseInt(formData.product_limit) || 0,
-          sales_person_limit: parseInt(formData.sales_person_limit) || 0
+          sales_person_limit: parseInt(formData.sales_person_limit) || 0,
+          price: parseFloat(formData.price) || 0.00
         })
       });
       const data = await res.json();
       if (data.success) {
         fetchPlans();
         setShowModal(false);
-        setFormData({ name: '', product_limit: '0', sales_person_limit: '0' });
+        setFormData({ name: '', product_limit: '0', sales_person_limit: '0', price: '0.00' });
         setIsEdit(false);
         setEditId(null);
       } else {
@@ -89,7 +91,8 @@ export default function SubscriptionPlansPage() {
     setFormData({
       name: plan.name,
       product_limit: String(plan.product_limit),
-      sales_person_limit: String(plan.sales_person_limit)
+      sales_person_limit: String(plan.sales_person_limit),
+      price: String(plan.price || '0.00')
     });
     setEditId(plan.id);
     setIsEdit(true);
@@ -165,7 +168,7 @@ export default function SubscriptionPlansPage() {
           onClick={() => {
             setIsEdit(false);
             setEditId(null);
-            setFormData({ name: '', product_limit: '0', sales_person_limit: '0' });
+            setFormData({ name: '', product_limit: '0', sales_person_limit: '0', price: '0.00' });
             setShowModal(true);
           }}
           className="bg-indigo-600 shadow-lg shadow-indigo-900/30 text-white flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm hover:bg-indigo-500 transition-all font-semibold"
@@ -219,6 +222,13 @@ export default function SubscriptionPlansPage() {
               </div>
 
               <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">Price</span>
+                  </div>
+                  <span className="text-lg font-bold text-amber-400">${Number(plan.price || 0).toFixed(2)}</span>
+                </div>
+
                 <div className="flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800">
                   <div className="flex items-center gap-2">
                     <Package2 className="w-4 h-4 text-indigo-400" />
@@ -305,6 +315,22 @@ export default function SubscriptionPlansPage() {
                         onChange={e => setFormData({ ...formData, sales_person_limit: e.target.value })} 
                       />
                     </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-widest">Price</label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold">$</span>
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      min="0"
+                      className="w-full pl-8 pr-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium" 
+                      placeholder="0.00"
+                      value={formData.price} 
+                      onChange={e => setFormData({ ...formData, price: e.target.value })} 
+                    />
                   </div>
                 </div>
               </div>

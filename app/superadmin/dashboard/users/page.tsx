@@ -8,7 +8,7 @@ export default function SuperAdminUsersPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [plans, setPlans] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '', admin_id: '', enable_par_levels: true, subscription_plan_id: '' });
+  const [formData, setFormData] = useState({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '', admin_id: '', enable_par_levels: true, subscription_plan_id: '', is_active: true });
   const [loading, setLoading] = useState(true);
   const [isEdit, setIsEdit] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
@@ -119,7 +119,9 @@ export default function SuperAdminUsersPage() {
         admin_id: formData.role === 'staff' && formData.admin_id ? parseInt(formData.admin_id) : null,
         inventory_location: formData.role === 'admin' ? '' : formData.inventory_location,
         enable_par_levels: formData.enable_par_levels,
-        subscription_plan_id: formData.role === 'admin' && formData.subscription_plan_id ? parseInt(formData.subscription_plan_id) : null
+        is_active: formData.is_active,
+        subscription_plan_id: formData.role === 'admin' && formData.subscription_plan_id ? parseInt(formData.subscription_plan_id) : null,
+        password: formData.password || undefined
       };
       
       const res = await fetch(url, {
@@ -135,7 +137,7 @@ export default function SuperAdminUsersPage() {
         fetchUsers();
         setShowModal(false);
         setShowPassword(false);
-        setFormData({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '', admin_id: '', enable_par_levels: true, subscription_plan_id: '' });
+        setFormData({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '', admin_id: '', enable_par_levels: true, subscription_plan_id: '', is_active: true });
         setIsEdit(false);
         setEditId(null);
       } else {
@@ -159,7 +161,8 @@ export default function SuperAdminUsersPage() {
       inventory_location: user.inventory_location || '',
       admin_id: user.admin_id ? String(user.admin_id) : '',
       enable_par_levels: user.enable_par_levels ?? true,
-      subscription_plan_id: user.subscription_plan_id ? String(user.subscription_plan_id) : ''
+      subscription_plan_id: user.subscription_plan_id ? String(user.subscription_plan_id) : '',
+      is_active: user.is_active ?? true
     });
     setEditId(user.id);
     setIsEdit(true);
@@ -240,7 +243,7 @@ export default function SuperAdminUsersPage() {
                 setIsEdit(false);
                 setEditId(null);
                 setShowPassword(false);
-                setFormData({ name: '', phone: '', username: '', email: '', password: '', role: 'admin', inventory_location: '', admin_id: '', enable_par_levels: true, subscription_plan_id: '' });
+                setFormData({ name: '', phone: '', username: '', email: '', password: '', role: 'admin', inventory_location: '', admin_id: '', enable_par_levels: true, subscription_plan_id: '', is_active: true });
                 setShowModal(true);
               }}
               className="bg-indigo-600 shadow-lg shadow-indigo-900/30 text-white flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm hover:bg-indigo-500 transition-all font-semibold"
@@ -313,6 +316,11 @@ export default function SuperAdminUsersPage() {
                   <div className="space-y-1.5 flex-1 min-w-0 pr-2">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-bold text-slate-200 truncate">{admin.name}</span>
+                      {admin.is_active !== false ? (
+                        <span className="text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-1.5 py-0.5 rounded-full font-bold">Active</span>
+                      ) : (
+                        <span className="text-[10px] bg-red-950/60 text-red-400 border border-red-900/40 px-1.5 py-0.5 rounded-full font-bold">Inactive</span>
+                      )}
                       {admin.enable_par_levels !== false ? (
                         <span className="text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900/40 px-1.5 py-0.5 rounded-full font-bold">Par Levels On</span>
                       ) : (
@@ -400,7 +408,8 @@ export default function SuperAdminUsersPage() {
                   inventory_location: '', 
                   admin_id: typeof activeAdminId === 'number' ? String(activeAdminId) : '',
                   enable_par_levels: true,
-                  subscription_plan_id: '' 
+                  subscription_plan_id: '',
+                  is_active: true
                 });
                 setShowModal(true);
               }}
@@ -615,6 +624,22 @@ export default function SuperAdminUsersPage() {
                       >
                         <span
                           className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${formData.enable_par_levels ? 'translate-x-5' : 'translate-x-0'}`}
+                        />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 bg-slate-950 rounded-lg border border-slate-800">
+                      <div className="flex flex-col">
+                        <label className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Activate Account</label>
+                        <span className="text-[10px] text-slate-500">Allow this user to login and access the system</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, is_active: !formData.is_active })}
+                        className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${formData.is_active ? 'bg-emerald-600' : 'bg-slate-700'}`}
+                      >
+                        <span
+                          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${formData.is_active ? 'translate-x-5' : 'translate-x-0'}`}
                         />
                       </button>
                     </div>
