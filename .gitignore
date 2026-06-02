@@ -19,6 +19,9 @@
 .DS_Store
 *.pem
 
+#SuperVendor_latest_version.apk
+*.apk
+
 # debug
 npm-debug.log*
 yarn-debug.log*
