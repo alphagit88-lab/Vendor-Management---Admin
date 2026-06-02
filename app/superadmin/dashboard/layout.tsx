@@ -42,9 +42,8 @@ export default function SuperAdminDashboardLayout({ children }: { children: Reac
   return (
     <div className="flex bg-slate-950 min-h-screen text-slate-100 font-sans selection:bg-indigo-900 selection:text-indigo-200">
       {/* Sidebar */}
-      <aside className="w-72 bg-slate-900 border-r border-slate-800 flex flex-col justify-between fixed h-full z-20 shadow-[4px_0_24px_rgba(0,0,0,0.3)]">
-        <div>
-          <div className="h-24 flex items-center justify-center px-4 border-b border-slate-800">
+      <aside className="w-72 bg-slate-900 border-r border-slate-800 flex flex-col fixed h-full z-20 shadow-[4px_0_24px_rgba(0,0,0,0.3)]">
+          <div className="h-24 flex items-center justify-center px-4 border-b border-slate-800 shrink-0">
             <Link href="/superadmin/dashboard" className="w-full">
               <div className="relative w-full h-16 bg-slate-950 rounded-xl shadow-md border border-slate-800 overflow-hidden p-1 flex items-center justify-center gap-3">
                 <div className="relative w-10 h-10 shrink-0">
@@ -65,7 +64,7 @@ export default function SuperAdminDashboardLayout({ children }: { children: Reac
             </Link>
           </div>
 
-          <div className="px-4 py-6">
+          <div className="px-4 py-6 overflow-y-auto flex-grow-1 sidebar-scroll-dark">
             <p className="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Core Infrastructure</p>
             <nav className="flex flex-col gap-1.5 border-none">
               {navLinks.map((link) => {
@@ -90,7 +89,6 @@ export default function SuperAdminDashboardLayout({ children }: { children: Reac
               })}
             </nav>
           </div>
-        </div>
 
         {/* User Card */}
         <div className="p-4 border-t border-slate-800 bg-slate-900/50 m-4 rounded-xl">

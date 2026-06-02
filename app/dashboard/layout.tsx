@@ -48,9 +48,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex bg-gray-50/50 min-h-screen font-sans selection:bg-indigo-100 selection:text-indigo-900">
       {/* Sidebar */}
-      <aside className="w-72 bg-white border-r border-gray-100 flex flex-col justify-between fixed h-full z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
-        <div>
-          <div className="h-24 flex items-center justify-center px-4 border-b border-gray-200">
+      <aside className="w-72 bg-white border-r border-gray-100 flex flex-col fixed h-full z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+          <div className="h-24 flex items-center justify-center px-4 border-b border-gray-200 shrink-0">
             <Link href="/dashboard" className="w-full">
               <div className="relative w-full h-16 bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden p-1">
                 <div className="relative w-full h-full">
@@ -67,7 +66,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </Link>
           </div>
 
-          <div className="px-4 py-6">
+          <div className="px-4 py-6 overflow-y-auto flex-grow-1 sidebar-scroll-light">
             <p className="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">Core System</p>
             <nav className="flex flex-col gap-1.5 border-none">
               {navLinks.map((link) => {
@@ -92,7 +91,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               })}
             </nav>
           </div>
-        </div>
 
         <div className="p-4 border-t border-gray-50 bg-[#c9daff] m-4 rounded-lg">
           <div className="flex items-center gap-3 mb-4 px-2">
