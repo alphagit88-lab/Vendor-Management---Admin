@@ -9,11 +9,14 @@ import * as XLSX from 'xlsx';
 export default function ReportsPage() {
   const [data, setData] = useState<any[]>([]);
   const [customers, setCustomers] = useState<any[]>([]);
+  const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [customersLoading, setCustomersLoading] = useState(true);
+  const [itemsLoading, setItemsLoading] = useState(true);
 
   // Filters
   const [selectedCustomerId, setSelectedCustomerId] = useState('');
+  const [selectedItemId, setSelectedItemId] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
@@ -34,6 +37,23 @@ export default function ReportsPage() {
     }
   };
 
+  const fetchItems = async () => {
+    setItemsLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/items`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      const result = await res.json();
+      if (result.success) {
+        setItems(result.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setItemsLoading(false);
+    }
+  };
+
   const fetchReport = async () => {
     setLoading(true);
     try {
@@ -41,6 +61,9 @@ export default function ReportsPage() {
       if (selectedCustomerId) {
         const customer = customers.find(c => c.id === parseInt(selectedCustomerId));
         if (customer) params.append('customerName', customer.name);
+      }
+      if (selectedItemId) {
+        params.append('itemId', selectedItemId);
       }
       if (startDate) params.append('startDate', startDate);
       if (endDate) params.append('endDate', endDate);
@@ -115,13 +138,14 @@ export default function ReportsPage() {
 
   useEffect(() => {
     fetchCustomers();
+    fetchItems();
   }, []);
 
   useEffect(() => {
-    if (customers.length > 0) {
+    if (customers.length > 0 && items.length > 0) {
       fetchReport();
     }
-  }, [selectedCustomerId, startDate, endDate, customers]);
+  }, [selectedCustomerId, selectedItemId, startDate, endDate, customers, items]);
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -134,9 +158,9 @@ export default function ReportsPage() {
 
       <div className="bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.02)] border border-gray-100 overflow-hidden min-h-[60vh] flex flex-col">
         {/* Filters */}
-        <div className="p-4 border-b border-gray-100 flex flex-wrap items-center gap-4 bg-gray-50/50">
-          <div className="flex items-center gap-2">
-            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Customer:</label>
+        <div className="p-4 border-b border-gray-100 flex flex-wrap items-end gap-6 bg-gray-50/50">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Customer</label>
             <select 
               className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-shadow"
               value={selectedCustomerId}
@@ -149,8 +173,22 @@ export default function ReportsPage() {
             </select>
           </div>
           
-          <div className="flex items-center gap-2">
-            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Start Date:</label>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Product Item</label>
+            <select 
+              className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-shadow"
+              value={selectedItemId}
+              onChange={(e) => setSelectedItemId(e.target.value)}
+            >
+              <option value="">All Items</option>
+              {items.map(i => (
+                <option key={i.id} value={i.id}>{i.description_name}{i.item_number ? ` (${i.item_number})` : ''}</option>
+              ))}
+            </select>
+          </div>
+          
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Start Date</label>
             <input 
               type="date" 
               className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-shadow"
@@ -159,8 +197,8 @@ export default function ReportsPage() {
             />
           </div>
           
-          <div className="flex items-center gap-2">
-            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">End Date:</label>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">End Date</label>
             <input 
               type="date" 
               className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-shadow"
@@ -215,7 +253,7 @@ export default function ReportsPage() {
             </thead>
             <tbody className="divide-y divide-gray-100 bg-white">
               {data.map(item => (
-                <tr key={item.id} className="hover:bg-gray-50/80 transition-colors">
+                <tr key={`${item.type}-${item.id}`} className="hover:bg-gray-50/80 transition-colors">
                   <td className="px-4 py-1 whitespace-nowrap text-sm font-mono font-bold text-gray-900">
                     {item.number}
                   </td>
