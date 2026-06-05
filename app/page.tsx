@@ -19,6 +19,7 @@ import {
   ShieldCheck,
   Truck,
   Waypoints,
+  Zap
 } from 'lucide-react';
 import image1 from '@/src/1.jpeg';
 import image2 from '@/src/2.jpeg';
@@ -234,6 +235,22 @@ export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [showTopButton, setShowTopButton] = useState(false);
   const [plans, setPlans] = useState<any[]>([]);
+  const [loadingPlans, setLoadingPlans] = useState(true);
+
+  // Static Enterprise Plan
+  const staticEnterprisePlan = {
+    id: 999,
+    name: "Custom Enterprise Solution",
+    price: null,
+    description: "A fully tailored system for large companies needing absolute independence and limitless capacity.",
+    isEnterprise: true,
+    features: [
+      "Capacity: Unlimited everything",
+      "Web Presence: Custom domain and full front-facing website",
+      "Experience: Advanced customer features and portals",
+      "Infrastructure: Dedicated custom app with your choice of hosting and complete data control"
+    ]
+  };
 
   // Fetch subscription plans
   useEffect(() => {
@@ -246,10 +263,15 @@ export default function Home() {
         }
       } catch (err) {
         console.error('Failed to load subscription plans:', err);
+      } finally {
+        setLoadingPlans(false);
       }
     };
     fetchPlans();
   }, []);
+
+  // Combine fetched plans + static enterprise plan as last element
+  const allPlans = [...plans, staticEnterprisePlan];
 
   const advanceSlide = useEffectEvent((direction: 1 | -1 = 1) => {
     startTransition(() => {
@@ -775,55 +797,36 @@ export default function Home() {
             </div>
 
             <div className="mt-16 flex flex-wrap justify-center gap-8 max-w-6xl mx-auto items-stretch">
-              {[
-                {
-                  id: 1,
-                  name: "Small Vendor Package",
-                  price: 59.99,
-                  description: "Designed specifically for small vendors looking to streamline their daily operations.",
-                  customer_limit: 200,
-                  product_limit: 150,
-                  van_limit: 3,
-                  warehouse_limit: 1,
-                  has_category_management: false,
-                  isPopular: false
-                },
-                {
-                  id: 2,
-                  name: "Pro Vendor Package",
-                  price: 119.99,
-                  description: "Built for professional vendors who are scaling their reach and expanding their inventory.",
-                  customer_limit: 400,
-                  product_limit: 300,
-                  van_limit: 9,
-                  warehouse_limit: 3,
-                  has_category_management: true,
-                  isPopular: true
-                },
-                {
-                  id: 3,
-                  name: "Custom Enterprise Solution",
-                  price: null,
-                  description: "A fully tailored system for large companies needing absolute independence and limitless capacity.",
-                  isPopular: false,
-                  isEnterprise: true,
-                  features: [
-                    "Capacity: Unlimited everything",
-                    "Web Presence: Custom domain and full front-facing website",
-                    "Experience: Advanced customer features and portals",
-                    "Infrastructure: Dedicated custom app with your choice of hosting and complete data control"
-                  ]
-                }
-              ].map((plan, index) => {
-                  const isPopular = plan.isPopular;
-                  const isEnterprise = plan.isEnterprise;
+              {loadingPlans ? (
+                // Loading placeholders
+                [1, 2, 3].map(i => (
+                  <div 
+                    key={i}
+                    data-reveal="zoom"
+                    className="relative w-full md:w-[calc(33.333%-1.5rem)] lg:w-[calc(33.333%-1.75rem)] max-w-sm rounded-[2.2rem] border p-8 border-black/6 bg-white/80 backdrop-blur-sm shadow-[0_24px_64px_rgba(17,32,51,0.08)] overflow-hidden animate-pulse"
+                  >
+                    <div className="h-8 bg-gray-200 rounded-md mb-4"></div>
+                    <div className="h-6 bg-gray-200 rounded-md mb-6"></div>
+                    <div className="h-12 bg-gray-200 rounded-md mb-8"></div>
+                    <div className="space-y-4">
+                      {[1,2,3,4].map(j => (
+                        <div key={j} className="h-5 bg-gray-200 rounded-md"></div>
+                      ))}
+                    </div>
+                    <div className="h-12 bg-gray-200 rounded-full mt-8"></div>
+                  </div>
+                ))
+              ) : (
+                allPlans.map((plan, index) => {
+                  const isPopular = plan.is_popular || false;
+                  const isEnterprise = plan.isEnterprise || false;
                   const price = plan.price;
                   
                   return (
                     <div 
                       key={plan.id} 
                       data-reveal="zoom"
-                      className={`relative w-full md:w-[calc(33.333%-1.5rem)] lg:w-[calc(33.333%-1.75rem)] max-w-sm rounded-[2.2rem] border p-8 shadow-[0_24px_64px_rgba(17,32,51,0.08)] flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl overflow-hidden ${
+                      className={`relative w-full md:w-[calc(33.333%-1.5rem)] lg:w-[calc(33.333%-1.75rem)] max-w-sm rounded-[2.2rem] border p-8 shadow-[0_24px_64px_rgba(17,32,51,0.08)] flex flex-col justify-between transition-all duration-300 hover:shadow-2xl overflow-hidden ${
                         isPopular 
                           ? 'border-[var(--landing-accent)] bg-[var(--landing-brand-strong)] text-white' 
                           : 'border-black/6 bg-white/80 backdrop-blur-sm'
@@ -854,11 +857,11 @@ export default function Home() {
                             <span className={`text-5xl font-bold tracking-tight font-[family:var(--font-space-grotesk)] ${
                               isPopular ? 'text-white' : 'text-[var(--landing-brand-strong)]'
                             }`}>
-                              ${price.toFixed(2)}
+                              ${Number(price).toFixed(2)}
                             </span>
-                            <span className={`text-sm font-semibold ${
+                            {/*<span className={`text-sm font-semibold ${
                               isPopular ? 'text-white/60' : 'text-[var(--landing-muted)]'
-                            }`}>/month</span>
+                            }`}>/month</span>*/}
                           </>
                         ) : (
                           <span className={`text-2xl font-bold tracking-tight font-[family:var(--font-space-grotesk)] ${
@@ -873,7 +876,7 @@ export default function Home() {
                         isPopular ? 'text-white/90' : 'text-[var(--landing-brand-strong)]'
                       }`}>
                         {isEnterprise ? (
-                          plan.features?.map((feature, idx) => (
+                          plan.features?.map((feature: string, idx: number) => (
                             <li key={idx} className="flex items-start gap-3">
                               <Check className={`h-4 w-4 shrink-0 mt-1 ${
                                 isPopular ? 'text-[var(--landing-accent)]' : 'text-[var(--landing-highlight)]'
@@ -915,14 +918,6 @@ export default function Home() {
                                 <span><strong>Warehouses:</strong> Up to {plan.warehouse_limit} warehouse locations</span>
                               </li>
                             )}
-                            {plan.has_category_management && (
-                              <li className="flex items-start gap-3">
-                                <Check className={`h-4 w-4 shrink-0 mt-1 ${
-                                  isPopular ? 'text-[var(--landing-accent)]' : 'text-[var(--landing-highlight)]'
-                                }`} />
-                                <span><strong>Category Management:</strong> Included</span>
-                              </li>
-                            )}
                           </>
                         )}
                       </ul>
@@ -942,7 +937,8 @@ export default function Home() {
                     </div>
                   </div>
                 );
-              })}
+              })
+            )}
             </div>
           </div>
         </section>

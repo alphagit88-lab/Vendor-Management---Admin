@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Plus, Search, Edit, Trash2, X, Zap, Package2, Users, FileText, Users2, Truck, Warehouse, CheckSquare } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, X, Zap, Package2, Users, FileText, Users2, Truck, Warehouse } from 'lucide-react';
 import { API_URL } from '@/lib/config';
 import ConfirmModal from '@/components/ConfirmModal';
 
@@ -17,7 +17,8 @@ export default function SubscriptionPlansPage() {
     customer_limit: '0',
     van_limit: '0',
     warehouse_limit: '0',
-    has_category_management: false
+    is_popular: false,
+    order: '0'
   });
   const [loading, setLoading] = useState(true);
   const [isEdit, setIsEdit] = useState(false);
@@ -76,14 +77,15 @@ export default function SubscriptionPlansPage() {
           price: parseFloat(formData.price) || 0.00,
           customer_limit: parseInt(formData.customer_limit) || 0,
           van_limit: parseInt(formData.van_limit) || 0,
-          warehouse_limit: parseInt(formData.warehouse_limit) || 0
+          warehouse_limit: parseInt(formData.warehouse_limit) || 0,
+          order: parseInt(formData.order) || 0
         })
       });
       const data = await res.json();
       if (data.success) {
         fetchPlans();
         setShowModal(false);
-        setFormData({ name: '', product_limit: '0', sales_person_limit: '0', price: '0.00', description: '', customer_limit: '0', van_limit: '0', warehouse_limit: '0', has_category_management: false });
+        setFormData({ name: '', product_limit: '0', sales_person_limit: '0', price: '0.00', description: '', customer_limit: '0', van_limit: '0', warehouse_limit: '0', is_popular: false, order: '0' });
         setIsEdit(false);
         setEditId(null);
       } else {
@@ -106,7 +108,8 @@ export default function SubscriptionPlansPage() {
       customer_limit: String(plan.customer_limit || '0'),
       van_limit: String(plan.van_limit || '0'),
       warehouse_limit: String(plan.warehouse_limit || '0'),
-      has_category_management: plan.has_category_management || false
+      is_popular: plan.is_popular || false,
+      order: String(plan.order || '0')
     });
     setEditId(plan.id);
     setIsEdit(true);
@@ -182,7 +185,7 @@ export default function SubscriptionPlansPage() {
           onClick={() => {
             setIsEdit(false);
             setEditId(null);
-            setFormData({ name: '', product_limit: '0', sales_person_limit: '0', price: '0.00', description: '', customer_limit: '0', van_limit: '0', warehouse_limit: '0', has_category_management: false });
+            setFormData({ name: '', product_limit: '0', sales_person_limit: '0', price: '0.00', description: '', customer_limit: '0', van_limit: '0', warehouse_limit: '0', is_popular: false, order: '0' });
             setShowModal(true);
           }}
           className="bg-indigo-600 shadow-lg shadow-indigo-900/30 text-white flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm hover:bg-indigo-500 transition-all font-semibold"
@@ -243,6 +246,13 @@ export default function SubscriptionPlansPage() {
                   <span className="text-lg font-bold text-amber-400">${Number(plan.price || 0).toFixed(2)}</span>
                 </div>
 
+                <div className="flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">Display Order</span>
+                  </div>
+                  <span className="text-sm font-bold text-white">{plan.order || 0}</span>
+                </div>
+
                 {plan.description && (
                   <div className="p-3 bg-slate-950 rounded-xl border border-slate-800">
                     <div className="flex items-center gap-2 mb-1">
@@ -283,16 +293,6 @@ export default function SubscriptionPlansPage() {
                     <span className="text-xs font-semibold text-slate-400">Warehouse Limit</span>
                   </div>
                   <span className="text-sm font-bold text-white">{plan.warehouse_limit}</span>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <CheckSquare className="w-4 h-4 text-indigo-400" />
-                    <span className="text-xs font-semibold text-slate-400">Category Management</span>
-                  </div>
-                  <span className={`text-xs font-bold ${plan.has_category_management ? 'text-green-400' : 'text-slate-500'}`}>
-                    {plan.has_category_management ? 'Yes' : 'No'}
-                  </span>
                 </div>
               </div>
             </div>
@@ -439,16 +439,30 @@ export default function SubscriptionPlansPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-widest">Display Order</label>
+                  <div className="relative">
+                    <input 
+                      type="number" 
+                      min="0"
+                      className="w-full px-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium" 
+                      placeholder="0"
+                      value={formData.order} 
+                      onChange={(e) => setFormData({ ...formData, order: e.target.value })} 
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 mt-4">
                   <input
                     type="checkbox"
-                    id="has_category_management"
-                    checked={formData.has_category_management}
-                    onChange={(e) => setFormData({ ...formData, has_category_management: e.target.checked })}
+                    id="is_popular"
+                    checked={formData.is_popular}
+                    onChange={(e) => setFormData({ ...formData, is_popular: e.target.checked })}
                     className="w-4 h-4 text-indigo-600 bg-slate-950 border-slate-700 rounded focus:ring-indigo-500 focus:ring-offset-slate-900"
                   />
-                  <label htmlFor="has_category_management" className="text-sm font-medium text-slate-200">
-                    Enable Category Management
+                  <label htmlFor="is_popular" className="text-sm font-medium text-slate-200">
+                    Mark as Popular Plan
                   </label>
                 </div>
               </div>
