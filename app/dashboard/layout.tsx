@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { LayoutDashboard, Users, Store, Package, LogOut, UserCircle, ShoppingCart, Boxes, ClipboardList, Layers, Settings, RotateCcw } from 'lucide-react';
+import { LayoutDashboard, Users, Store, Package, LogOut, UserCircle, ShoppingCart, Boxes, ClipboardList, Layers, Settings, RotateCcw, CreditCard } from 'lucide-react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -42,6 +42,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: 'Distribution Orders', href: '/dashboard/orders', icon: ShoppingCart },
     { name: 'Returns', href: '/dashboard/returns', icon: RotateCcw },
     { name: 'Reports', href: '/dashboard/reports', icon: ClipboardList },
+    { name: 'Payment Settings', href: '/dashboard/payment-settings', icon: CreditCard },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
   ];
 

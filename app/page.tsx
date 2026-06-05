@@ -8,7 +8,6 @@ import Link from 'next/link';
 import { Space_Grotesk } from 'next/font/google';
 import {
   ArrowRight,
-  ArrowUp,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -233,7 +232,6 @@ const serviceCards = [
 
 export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
-  const [showTopButton, setShowTopButton] = useState(false);
   const [plans, setPlans] = useState<any[]>([]);
   const [loadingPlans, setLoadingPlans] = useState(true);
 
@@ -286,19 +284,6 @@ export default function Home() {
 
     return () => {
       window.clearInterval(intervalId);
-    };
-  }, []);
-
-  useEffect(() => {
-    const onScroll = () => {
-      setShowTopButton(window.scrollY > 720);
-    };
-
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
     };
   }, []);
 
@@ -925,7 +910,8 @@ export default function Home() {
                     
                     <div className="mt-8">
                       <Link
-                        href={price !== null ? `/login?plan=${plan.id}` : '/#contact'}
+                        href={price !== null ? `/login?plan=${plan.id}` : 'https://wa.me/94715356485?text=Hello,%0ACan%20we%20discuss%20a%20custom%20pricing%20plan%20for%20our%20needs?'}
+                        target="_blank"
                         className={`w-full inline-flex items-center justify-center rounded-full py-3.5 text-sm font-semibold transition ${
                           isPopular 
                             ? 'bg-[var(--landing-accent)] text-white shadow-lg hover:bg-[var(--landing-accent)]/90' 
@@ -1028,17 +1014,6 @@ export default function Home() {
       </main>
 
       <LandingFooter />
-
-      {showTopButton ? (
-        <button
-          type="button"
-          aria-label="Scroll back to top"
-          className="fixed bottom-6 right-6 z-50 flex h-[3.25rem] w-[3.25rem] items-center justify-center rounded-full bg-[var(--landing-accent)] text-white shadow-[0_20px_40px_rgba(200,108,73,0.34)] transition hover:-translate-y-1"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        >
-          <ArrowUp className="h-5 w-5" />
-        </button>
-      ) : null}
     </div>
   );
 }

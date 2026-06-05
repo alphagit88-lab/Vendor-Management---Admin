@@ -346,7 +346,7 @@ function LoginContent() {
                       <option value="">Select a subscription plan</option>
                       {plans.map(plan => (
                         <option key={plan.id} value={plan.id}>
-                          {plan.name} - ${Number(plan.price || 0).toFixed(2)} (Products: {plan.product_limit}, Salespersons: {plan.sales_person_limit})
+                          {plan.name} - ${Number(plan.price || 0).toFixed(2)}
                         </option>
                       ))}
                     </select>
