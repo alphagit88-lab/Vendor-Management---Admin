@@ -51,14 +51,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <aside className="w-72 bg-white border-r border-gray-100 flex flex-col fixed h-full z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
           <div className="h-24 flex items-center justify-center px-4 border-b border-gray-200 shrink-0">
             <Link href="/dashboard" className="w-full">
-              <div className="relative w-full h-16 bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden p-1">
-                <div className="relative w-full h-full">
+              <div className="flex items-center justify-center">
+                <div className="relative h-16 w-16 bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
                   <Image
-                    src="/logon.jpeg"
+                    src="/lgo.jpeg"
                     alt="VendorOS Logo"
                     fill
-                    sizes="240px"
-                    className="object-contain"
+                    sizes="64px"
+                    className="object-cover rounded-md"
                     priority
                   />
                 </div>

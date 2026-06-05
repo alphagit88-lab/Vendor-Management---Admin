@@ -13,14 +13,12 @@ import {
   ChevronLeft,
   ChevronRight,
   Mail,
-  Menu,
   Phone,
   Printer,
   ScanLine,
   ShieldCheck,
   Truck,
   Waypoints,
-  X,
 } from 'lucide-react';
 import image1 from '@/src/1.jpeg';
 import image2 from '@/src/2.jpeg';
@@ -29,6 +27,8 @@ import image3Old from '@/src/3_old.jpeg';
 import image4 from '@/src/4.jpeg';
 import image5 from '@/src/5.jpeg';
 import image6 from '@/src/6.jpeg';
+import { LandingHeader } from '@/components/LandingHeader';
+import { LandingFooter } from '@/components/LandingFooter';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -48,14 +48,6 @@ const themeVars: CSSProperties = {
   ['--landing-accent-soft' as string]: '#ead2c3',
   ['--landing-highlight' as string]: '#5f9ea0',
 };
-
-const navLinks = [
-  { label: 'Home', href: '#home' },
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'Hardware', href: '#hardware' },
-  { label: 'Pricing', href: '#pricing' },
-  { label: 'Support & Contact', href: '#contact' },
-];
 
 const heroSlides: Array<{
   eyebrow: string;
@@ -240,9 +232,7 @@ const serviceCards = [
 
 export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [showTopButton, setShowTopButton] = useState(false);
-  const [termsOpen, setTermsOpen] = useState(false);
   const [plans, setPlans] = useState<any[]>([]);
 
   // Fetch subscription plans
@@ -314,16 +304,6 @@ export default function Home() {
     };
   }, [plans]);
 
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = menuOpen ? 'hidden' : '';
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [menuOpen]);
-
-  const currentYear = new Date().getFullYear();
   const currentSlide = heroSlides[activeSlide];
 
   return (
@@ -399,99 +379,7 @@ export default function Home() {
         }
       `}</style>
 
-      <header className="fixed inset-x-0 top-0 z-50">
-        <div className="bg-[var(--landing-brand-strong)] text-white">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-white/80">
-              <ScanLine className="h-4 w-4 text-[var(--landing-highlight)]" />
-              Real-time route invoicing for delivery teams
-            </div>
-            <div className="hidden items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold text-white/88 backdrop-blur md:flex">
-              <Printer className="h-4 w-4 text-[var(--landing-accent)]" />
-              On-site print ready
-            </div>
-          </div>
-        </div>
-
-        <div className="border-b border-black/5 bg-[rgba(255,250,244,0.92)] shadow-[0_12px_36px_rgba(16,32,51,0.08)] backdrop-blur-xl">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-            <Link href="#home" className="flex min-w-0 items-center gap-3" onClick={() => setMenuOpen(false)}>
-              <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm">
-                <Image
-                  src="/logon.jpeg"
-                  alt="Vendor Management logo"
-                  fill
-                  sizes="48px"
-                  priority
-                  className="object-contain p-1.5"
-                />
-              </div>
-              <div className="min-w-0">
-                <p className="truncate font-[family:var(--font-space-grotesk)] text-xl font-bold tracking-[-0.05em] text-[var(--landing-brand-strong)]">
-                  SuperVendor
-                </p>
-                <p className="truncate text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--landing-muted)]">
-                  Scan. Sync. Print.
-                </p>
-              </div>
-            </Link>
-
-            <nav className="hidden items-center gap-1 lg:flex">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="rounded-full px-4 py-2 text-sm font-medium text-[var(--landing-muted)] transition hover:bg-[var(--landing-accent-soft)] hover:text-[var(--landing-brand-strong)]"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-
-            <div className="hidden items-center gap-3 lg:flex">
-              <Link
-                href="/login"
-                className="inline-flex items-center justify-center rounded-full bg-[var(--landing-accent)] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_44px_rgba(200,108,73,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_54px_rgba(200,108,73,0.34)]"
-              >
-                Login
-              </Link>
-            </div>
-
-            <button
-              type="button"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/6 bg-white text-[var(--landing-brand-strong)] shadow-sm lg:hidden"
-              aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              onClick={() => setMenuOpen((current) => !current)}
-            >
-              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
-          </div>
-
-          {menuOpen ? (
-            <div className="border-t border-black/6 bg-[var(--landing-surface)] lg:hidden">
-              <nav className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-4 sm:px-6">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    className="rounded-2xl px-4 py-3 text-sm font-semibold text-[var(--landing-brand-strong)] transition hover:bg-[var(--landing-surface-strong)]"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-                <Link
-                  href="/login"
-                  className="mt-2 inline-flex items-center justify-center rounded-2xl bg-[var(--landing-accent)] px-4 py-3 text-sm font-semibold text-white"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Login
-                </Link>
-              </nav>
-            </div>
-          ) : null}
-        </div>
-      </header>
+      <LandingHeader />
 
       <main className="pt-[116px]">
         <section id="home" className="relative isolate overflow-hidden scroll-mt-32">
@@ -879,7 +767,7 @@ export default function Home() {
                 Find the Right Plan for Your Operations
               </h2>
               <p className="mt-6 text-lg leading-8 text-[var(--landing-muted)]">
-                We offer two specialized software packages built specifically for small and growing vendors. If you are a large company looking for a comprehensive solution, we can help build a custom app equipped with your own dedicated website and domain. With our custom solutions, you have the flexibility to choose your own hosting provider and maintain absolute control over your own data.
+                We offer three tailored solutions: two specialized software packages for small and growing vendors, plus a custom enterprise option for large companies needing absolute independence and limitless capacity.
               </p>
               <p className="mt-4 text-sm text-[var(--landing-accent)] font-semibold">
                 If you can't select from our available packages below, please contact us for more information on a tailored solution.
@@ -887,14 +775,49 @@ export default function Home() {
             </div>
 
             <div className="mt-16 flex flex-wrap justify-center gap-8 max-w-6xl mx-auto items-stretch">
-              {plans.length === 0 ? (
-                <div className="text-center py-20 w-full">
-                  <p className="text-lg text-[var(--landing-muted)]">Loading pricing plans...</p>
-                </div>
-              ) : (
-                plans.map((plan, index) => {
-                  const isPopular = plans.length > 1 && index === 1;
-                  const price = Number(plan.price || 0);
+              {[
+                {
+                  id: 1,
+                  name: "Small Vendor Package",
+                  price: 59.99,
+                  description: "Designed specifically for small vendors looking to streamline their daily operations.",
+                  customer_limit: 200,
+                  product_limit: 150,
+                  van_limit: 3,
+                  warehouse_limit: 1,
+                  has_category_management: false,
+                  isPopular: false
+                },
+                {
+                  id: 2,
+                  name: "Pro Vendor Package",
+                  price: 119.99,
+                  description: "Built for professional vendors who are scaling their reach and expanding their inventory.",
+                  customer_limit: 400,
+                  product_limit: 300,
+                  van_limit: 9,
+                  warehouse_limit: 3,
+                  has_category_management: true,
+                  isPopular: true
+                },
+                {
+                  id: 3,
+                  name: "Custom Enterprise Solution",
+                  price: null,
+                  description: "A fully tailored system for large companies needing absolute independence and limitless capacity.",
+                  isPopular: false,
+                  isEnterprise: true,
+                  features: [
+                    "Capacity: Unlimited everything",
+                    "Web Presence: Custom domain and full front-facing website",
+                    "Experience: Advanced customer features and portals",
+                    "Infrastructure: Dedicated custom app with your choice of hosting and complete data control"
+                  ]
+                }
+              ].map((plan, index) => {
+                  const isPopular = plan.isPopular;
+                  const isEnterprise = plan.isEnterprise;
+                  const price = plan.price;
                   
                   return (
                     <div 
@@ -917,55 +840,109 @@ export default function Home() {
                         isPopular ? 'text-white' : 'text-[var(--landing-brand-strong)]'
                       }`}>{plan.name}</h3>
                       
-                      <p className="mt-4 text-sm min-h-[48px]">
-                        Subscription plan with product and sales person limits
-                      </p>
+                      {plan.description && (
+                        <p className={`mt-4 text-sm min-h-[48px] ${
+                          isPopular ? 'text-white/80' : 'text-[var(--landing-muted)]'
+                        }`}>
+                          {plan.description}
+                        </p>
+                      )}
                       
                       <p className="mt-6">
-                        <span className={`text-5xl font-bold tracking-tight font-[family:var(--font-space-grotesk)] ${
-                          isPopular ? 'text-white' : 'text-[var(--landing-brand-strong)]'
-                        }`}>
-                          ${price.toFixed(2)}
-                        </span>
-                        <span className={`text-sm font-semibold ${
-                          isPopular ? 'text-white/60' : 'text-[var(--landing-muted)]'
-                        }`}>/month</span>
+                        {price !== null ? (
+                          <>
+                            <span className={`text-5xl font-bold tracking-tight font-[family:var(--font-space-grotesk)] ${
+                              isPopular ? 'text-white' : 'text-[var(--landing-brand-strong)]'
+                            }`}>
+                              ${price.toFixed(2)}
+                            </span>
+                            <span className={`text-sm font-semibold ${
+                              isPopular ? 'text-white/60' : 'text-[var(--landing-muted)]'
+                            }`}>/month</span>
+                          </>
+                        ) : (
+                          <span className={`text-2xl font-bold tracking-tight font-[family:var(--font-space-grotesk)] ${
+                            isPopular ? 'text-white' : 'text-[var(--landing-brand-strong)]'
+                          }`}>
+                            Contact Us for Pricing
+                          </span>
+                        )}
                       </p>
                       
                       <ul className={`mt-8 space-y-4 text-sm ${
                         isPopular ? 'text-white/90' : 'text-[var(--landing-brand-strong)]'
                       }`}>
-                        <li className="flex items-start gap-3">
-                          <Check className={`h-4 w-4 shrink-0 mt-1 ${
-                            isPopular ? 'text-[var(--landing-accent)]' : 'text-[var(--landing-highlight)]'
-                          }`} />
-                          <span><strong>Products:</strong> Up to {plan.product_limit} products</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <Check className={`h-4 w-4 shrink-0 mt-1 ${
-                            isPopular ? 'text-[var(--landing-accent)]' : 'text-[var(--landing-highlight)]'
-                          }`} />
-                          <span><strong>Sales Persons:</strong> Up to {plan.sales_person_limit} sales persons</span>
-                        </li>
+                        {isEnterprise ? (
+                          plan.features?.map((feature, idx) => (
+                            <li key={idx} className="flex items-start gap-3">
+                              <Check className={`h-4 w-4 shrink-0 mt-1 ${
+                                isPopular ? 'text-[var(--landing-accent)]' : 'text-[var(--landing-highlight)]'
+                              }`} />
+                              <span>{feature}</span>
+                            </li>
+                          ))
+                        ) : (
+                          <>
+                            {(plan.customer_limit ?? 0) > 0 && (
+                              <li className="flex items-start gap-3">
+                                <Check className={`h-4 w-4 shrink-0 mt-1 ${
+                                  isPopular ? 'text-[var(--landing-accent)]' : 'text-[var(--landing-highlight)]'
+                                }`} />
+                                <span><strong>Customers:</strong> Up to {plan.customer_limit} customers</span>
+                              </li>
+                            )}
+                            {(plan.product_limit ?? 0) > 0 && (
+                              <li className="flex items-start gap-3">
+                                <Check className={`h-4 w-4 shrink-0 mt-1 ${
+                                  isPopular ? 'text-[var(--landing-accent)]' : 'text-[var(--landing-highlight)]'
+                                }`} />
+                                <span><strong>Products:</strong> Up to {plan.product_limit} products</span>
+                              </li>
+                            )}
+                            {(plan.van_limit ?? 0) > 0 && (
+                              <li className="flex items-start gap-3">
+                                <Check className={`h-4 w-4 shrink-0 mt-1 ${
+                                  isPopular ? 'text-[var(--landing-accent)]' : 'text-[var(--landing-highlight)]'
+                                }`} />
+                                <span><strong>Vans:</strong> Manage up to {plan.van_limit} delivery vans</span>
+                              </li>
+                            )}
+                            {(plan.warehouse_limit ?? 0) > 0 && (
+                              <li className="flex items-start gap-3">
+                                <Check className={`h-4 w-4 shrink-0 mt-1 ${
+                                  isPopular ? 'text-[var(--landing-accent)]' : 'text-[var(--landing-highlight)]'
+                                }`} />
+                                <span><strong>Warehouses:</strong> Up to {plan.warehouse_limit} warehouse locations</span>
+                              </li>
+                            )}
+                            {plan.has_category_management && (
+                              <li className="flex items-start gap-3">
+                                <Check className={`h-4 w-4 shrink-0 mt-1 ${
+                                  isPopular ? 'text-[var(--landing-accent)]' : 'text-[var(--landing-highlight)]'
+                                }`} />
+                                <span><strong>Category Management:</strong> Included</span>
+                              </li>
+                            )}
+                          </>
+                        )}
                       </ul>
                     </div>
                     
                     <div className="mt-8">
                       <Link
-                        href={`/login?plan=${plan.id}`}
+                        href={price !== null ? `/login?plan=${plan.id}` : '/#contact'}
                         className={`w-full inline-flex items-center justify-center rounded-full py-3.5 text-sm font-semibold transition ${
                           isPopular 
                             ? 'bg-[var(--landing-accent)] text-white shadow-lg hover:bg-[var(--landing-accent)]/90' 
                             : 'border border-black/10 bg-white/50 text-[var(--landing-brand-strong)] hover:bg-[var(--landing-accent-soft)]'
                         }`}
                       >
-                        Get Started
+                        {price !== null ? 'Get Started' : 'Contact Us'}
                       </Link>
                     </div>
                   </div>
                 );
-              })
-              )}
+              })}
             </div>
           </div>
         </section>
@@ -1054,64 +1031,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="bg-[var(--landing-brand)] px-4 py-16 text-white sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-4">
-            <div>
-              <p className="font-[family:var(--font-space-grotesk)] text-2xl font-semibold tracking-[-0.05em]">
-                SuperVendor
-              </p>
-              <p className="mt-4 max-w-xs text-sm leading-7 text-white/74">
-                Fast delivery tools with live sync and instant printing.
-              </p>
-            </div>
-
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/52">Why SuperVendor?</p>
-              <div className="mt-4 space-y-3 text-sm text-white/76">
-                <p>Faster delivery stops.</p>
-                <p>Fewer mistakes.</p>
-                <p>Instant invoices.</p>
-              </div>
-            </div>
-
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/52">Quick Links</p>
-              <div className="mt-4 flex flex-col gap-3 text-sm text-white/76">
-                {navLinks.map((link) => (
-                  <Link key={link.label} href={link.href} className="transition hover:text-white">
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/52">Access</p>
-              <p className="mt-4 max-w-xs text-sm leading-7 text-white/76">
-                Ready to get started?
-              </p>
-              <Link
-                href="/login"
-                className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-[var(--landing-accent)] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5"
-              >
-                Login
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </div>
-
-          <div className="mt-12 border-t border-white/10 pt-6 text-sm text-white/52 flex flex-col sm:flex-row sm:justify-between items-center gap-4">
-            <span>Copyright {currentYear} SuperVendor.</span>
-            <button
-              onClick={() => setTermsOpen(true)}
-              className="hover:text-white transition font-medium underline underline-offset-4"
-            >
-              Terms & Conditions
-            </button>
-          </div>
-        </div>
-      </footer>
+      <LandingFooter />
 
       {showTopButton ? (
         <button
@@ -1122,136 +1042,6 @@ export default function Home() {
         >
           <ArrowUp className="h-5 w-5" />
         </button>
-      ) : null}
-
-      {/* Terms and Conditions Modal */}
-      {termsOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="relative w-full max-w-3xl rounded-[2.2rem] border border-black/6 bg-white p-8 md:p-10 shadow-[0_32px_96px_rgba(17,32,51,0.24)] text-[var(--landing-brand-strong)] max-h-[85vh] overflow-y-auto flex flex-col justify-between">
-            <button
-              onClick={() => setTermsOpen(false)}
-              aria-label="Close terms modal"
-              className="absolute right-6 top-6 flex h-10 w-10 items-center justify-center rounded-full border border-black/6 bg-white shadow-sm transition hover:bg-black/5"
-            >
-              <X className="h-5 w-5" />
-            </button>
-
-            <div>
-              <h2 className="font-[family:var(--font-space-grotesk)] text-3xl font-bold leading-tight tracking-[-0.05em] text-[var(--landing-brand-strong)]">
-                Terms and Conditions
-              </h2>
-              <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-[var(--landing-accent)]">
-                Effective Date: May 19, 2026
-              </p>
-
-              <div className="mt-6 border-t border-black/5 pt-6 space-y-6 text-sm leading-relaxed text-[var(--landing-muted)]">
-                <p>
-                  Welcome to Super Vendor. These Terms and Conditions govern your access to and use of our software and services. This platform is strictly dedicated to serving small vendors. By choosing to use our services, you fully agree to the terms outlined below.
-                </p>
-
-                <div>
-                  <h3 className="font-bold text-[var(--landing-brand-strong)] text-base">
-                    1. Absolute Limitation of Liability
-                  </h3>
-                  <p className="mt-2">
-                    Super Vendor provides its platform and services on an "as is" basis. By using our platform, you explicitly agree that:
-                  </p>
-                  <ul className="mt-3 space-y-2 list-disc list-inside pl-2">
-                    <li>
-                      <strong className="text-[var(--landing-brand-strong)]">Zero Liability:</strong> Super Vendor, its developers, and its affiliates are not liable for anything related to your use of this service.
-                    </li>
-                    <li>
-                      <strong className="text-[var(--landing-brand-strong)]">Data Loss:</strong> We are completely absolved of any responsibility or liability for data losses, corruption, or breaches of any kind.
-                    </li>
-                    <li>
-                      <strong className="text-[var(--landing-brand-strong)]">Waiver of Legal Action:</strong> You agree that you cannot take any legal action, file lawsuits, or initiate arbitration against Super Vendor for any reason, under any circumstances, resulting from your decision to use our services.
-                    </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="font-bold text-[var(--landing-brand-strong)] text-base">
-                    2. Vendor and Customer Responsibility
-                  </h3>
-                  <p className="mt-2">
-                    Super Vendor operates solely as a software platform and is completely removed from your daily business operations and transactions.
-                  </p>
-                  <ul className="mt-3 space-y-2 list-disc list-inside pl-2">
-                    <li>
-                      <strong className="text-[var(--landing-brand-strong)]">Full Accountability:</strong> You and your customers bear total responsibility for everything concerning your business, your transactions, and your interactions.
-                    </li>
-                    <li>
-                      <strong className="text-[var(--landing-brand-strong)]">Product Delivery:</strong> We are not responsible for the products you deliver, the quality of your goods, shipping issues, or customer disputes.
-                    </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="font-bold text-[var(--landing-brand-strong)] text-base">
-                    3. Legal Compliance and Prohibited Activities
-                  </h3>
-                  <p className="mt-2">
-                    As a vendor utilizing our platform, you must operate strictly within the bounds of the law.
-                  </p>
-                  <ul className="mt-3 space-y-2 list-disc list-inside pl-2">
-                    <li>
-                      <strong className="text-[var(--landing-brand-strong)]">USA Compliance:</strong> You are entirely responsible for ensuring that all products you sell and distribute are 100% legal to sell within the United States of America.
-                    </li>
-                    <li>
-                      <strong className="text-[var(--landing-brand-strong)]">Strict Prohibition:</strong> The sale, promotion, or distribution of any illegal, counterfeit, or regulated illicit products using the Super Vendor platform is strictly prohibited. Violation of this clause will result in immediate termination.
-                    </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="font-bold text-[var(--landing-brand-strong)] text-base">
-                    4. Billing, Termination, and Data Access
-                  </h3>
-                  <p className="mt-2">
-                    Access to Super Vendor is contingent upon your timely payment for our services.
-                  </p>
-                  <ul className="mt-3 space-y-2 list-disc list-inside pl-2">
-                    <li>
-                      <strong className="text-[var(--landing-brand-strong)]">Right to Terminate:</strong> If you fail to pay for your subscription or service fees, we reserve the right to immediately suspend or terminate your account without prior notice.
-                    </li>
-                    <li>
-                      <strong className="text-[var(--landing-brand-strong)]">Loss of Data Access:</strong> Upon account termination due to non-payment or policy violation, you will immediately lose all access to your account and your data.
-                    </li>
-                    <li>
-                      <strong className="text-[var(--landing-brand-strong)]">Data Responsibility Post-Termination:</strong> Super Vendor is not responsible for storing, retrieving, or transferring your data once your account has been terminated.
-                    </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="font-bold text-[var(--landing-brand-strong)] text-base">
-                    5. Subscription Pricing and Fair Usage
-                  </h3>
-                  <ul className="mt-3 space-y-2 list-disc list-inside pl-2">
-                    <li>
-                      <strong className="text-[var(--landing-brand-strong)]">Price Increases:</strong> We reserve the right to increase your monthly subscription charges. You will be provided with a thirty (30) day prior notice before any new pricing takes effect.
-                    </li>
-                    <li>
-                      <strong className="text-[var(--landing-brand-strong)]">Mandatory Upgrades:</strong> Our lowest subscription tiers are designed for standard usage. If you are on the lowest subscription plan and we determine that your account is using our system heavily or utilizing excessive resources, we reserve the right to force an upgrade to a higher subscription tier.
-                    </li>
-                    <li>
-                      <strong className="text-[var(--landing-brand-strong)]">Refusal to Upgrade:</strong> If you refuse to comply with a mandatory upgrade due to heavy usage, we retain the right to terminate your account immediately and you will lose access to your data, as outlined in Section 4.
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8 flex justify-end border-t border-black/5 pt-6">
-              <button
-                onClick={() => setTermsOpen(false)}
-                className="inline-flex items-center justify-center rounded-full bg-[var(--landing-brand-strong)] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[var(--landing-brand-strong)]/90"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
       ) : null}
     </div>
   );

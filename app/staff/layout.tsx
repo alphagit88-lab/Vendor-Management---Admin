@@ -56,14 +56,14 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
         <div>
           <div className="h-24 flex items-center justify-center px-4 border-b border-gray-200">
             <Link href="/staff/dashboard" className="w-full">
-              <div className="relative w-full h-16 bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden p-1">
-                <div className="relative w-full h-full">
+              <div className="flex items-center justify-center">
+                <div className="relative h-16 w-16 bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
                   <Image
-                    src="/logon.jpeg"
+                    src="/lgo.jpeg"
                     alt="VendorOS Logo"
                     fill
-                    sizes="240px"
-                    className="object-contain"
+                    sizes="64px"
+                    className="object-cover rounded-md"
                     priority
                   />
                 </div>

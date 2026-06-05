@@ -53,14 +53,14 @@ export default function SuperAdminLogin() {
         <div className="absolute inset-0 bg-linear-to-br from-indigo-500/10 via-transparent to-purple-500/10 pointer-events-none" />
         
         <div className="z-10 max-w-lg px-8 flex flex-col items-center justify-center text-center">
-          <div className="relative p-6 bg-slate-900/80 rounded-3xl shadow-2xl border border-indigo-500/30 backdrop-blur-xl animate-pulse">
-            <div className="w-28 h-28 relative">
+          <div className="relative p-0 bg-slate-900/80 rounded-xl shadow-2xl border border-indigo-500/30 backdrop-blur-xl animate-pulse">
+            <div className="w-32 h-32 relative overflow-hidden">
               <Image
-                src="/logon.jpeg"
+                src="/lgo.jpeg"
                 alt="VendorOS Logo"
                 fill
-                sizes="112px"
-                className="object-contain rounded-2xl filter brightness-95"
+                sizes="128px"
+                className="object-cover rounded-md filter brightness-95"
                 priority
               />
             </div>
@@ -93,9 +93,9 @@ export default function SuperAdminLogin() {
         <div className="w-full max-w-md mx-auto space-y-8">
           <div className="text-center lg:text-left">
             <div className="lg:hidden flex justify-center mb-8">
-              <div className="relative p-4 bg-slate-900/80 rounded-2xl shadow-xl border border-indigo-500/20">
-                <div className="w-20 h-20 relative">
-                  <Image src="/logon.jpeg" alt="VendorOS Logo" fill sizes="80px" className="object-contain rounded-xl" />
+              <div className="relative p-0 bg-slate-900/80 rounded-xl shadow-xl border border-indigo-500/20">
+                <div className="w-24 h-24 relative overflow-hidden">
+                  <Image src="/lgo.jpeg" alt="VendorOS Logo" fill sizes="96px" className="object-cover rounded-md" />
                 </div>
               </div>
             </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Plus, Search, Edit, Trash2, X, Zap, Package2, Users } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, X, Zap, Package2, Users, FileText, Users2, Truck, Warehouse, CheckSquare } from 'lucide-react';
 import { API_URL } from '@/lib/config';
 import ConfirmModal from '@/components/ConfirmModal';
 
@@ -12,7 +12,12 @@ export default function SubscriptionPlansPage() {
     name: '', 
     product_limit: '0', 
     sales_person_limit: '0',
-    price: '0.00'
+    price: '0.00',
+    description: '',
+    customer_limit: '0',
+    van_limit: '0',
+    warehouse_limit: '0',
+    has_category_management: false
   });
   const [loading, setLoading] = useState(true);
   const [isEdit, setIsEdit] = useState(false);
@@ -46,7 +51,8 @@ export default function SubscriptionPlansPage() {
   const filteredPlans = plans.filter(plan => {
     const term = searchTerm.toLowerCase();
     return (
-      plan.name?.toLowerCase().includes(term)
+      plan.name?.toLowerCase().includes(term) ||
+      plan.description?.toLowerCase().includes(term)
     );
   });
 
@@ -67,14 +73,17 @@ export default function SubscriptionPlansPage() {
           ...formData,
           product_limit: parseInt(formData.product_limit) || 0,
           sales_person_limit: parseInt(formData.sales_person_limit) || 0,
-          price: parseFloat(formData.price) || 0.00
+          price: parseFloat(formData.price) || 0.00,
+          customer_limit: parseInt(formData.customer_limit) || 0,
+          van_limit: parseInt(formData.van_limit) || 0,
+          warehouse_limit: parseInt(formData.warehouse_limit) || 0
         })
       });
       const data = await res.json();
       if (data.success) {
         fetchPlans();
         setShowModal(false);
-        setFormData({ name: '', product_limit: '0', sales_person_limit: '0', price: '0.00' });
+        setFormData({ name: '', product_limit: '0', sales_person_limit: '0', price: '0.00', description: '', customer_limit: '0', van_limit: '0', warehouse_limit: '0', has_category_management: false });
         setIsEdit(false);
         setEditId(null);
       } else {
@@ -92,7 +101,12 @@ export default function SubscriptionPlansPage() {
       name: plan.name,
       product_limit: String(plan.product_limit),
       sales_person_limit: String(plan.sales_person_limit),
-      price: String(plan.price || '0.00')
+      price: String(plan.price || '0.00'),
+      description: plan.description || '',
+      customer_limit: String(plan.customer_limit || '0'),
+      van_limit: String(plan.van_limit || '0'),
+      warehouse_limit: String(plan.warehouse_limit || '0'),
+      has_category_management: plan.has_category_management || false
     });
     setEditId(plan.id);
     setIsEdit(true);
@@ -168,7 +182,7 @@ export default function SubscriptionPlansPage() {
           onClick={() => {
             setIsEdit(false);
             setEditId(null);
-            setFormData({ name: '', product_limit: '0', sales_person_limit: '0', price: '0.00' });
+            setFormData({ name: '', product_limit: '0', sales_person_limit: '0', price: '0.00', description: '', customer_limit: '0', van_limit: '0', warehouse_limit: '0', has_category_management: false });
             setShowModal(true);
           }}
           className="bg-indigo-600 shadow-lg shadow-indigo-900/30 text-white flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm hover:bg-indigo-500 transition-all font-semibold"
@@ -229,6 +243,16 @@ export default function SubscriptionPlansPage() {
                   <span className="text-lg font-bold text-amber-400">${Number(plan.price || 0).toFixed(2)}</span>
                 </div>
 
+                {plan.description && (
+                  <div className="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                    <div className="flex items-center gap-2 mb-1">
+                      <FileText className="w-3 h-3 text-indigo-400" />
+                      <span className="text-xs font-semibold text-slate-400">Description</span>
+                    </div>
+                    <p className="text-xs text-slate-300">{plan.description}</p>
+                  </div>
+                )}
+
                 <div className="flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800">
                   <div className="flex items-center gap-2">
                     <Package2 className="w-4 h-4 text-indigo-400" />
@@ -239,10 +263,36 @@ export default function SubscriptionPlansPage() {
 
                 <div className="flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800">
                   <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-indigo-400" />
-                    <span className="text-xs font-semibold text-slate-400">Salespersons Limit</span>
+                    <Users2 className="w-4 h-4 text-indigo-400" />
+                    <span className="text-xs font-semibold text-slate-400">Customer Limit</span>
                   </div>
-                  <span className="text-sm font-bold text-white">{plan.sales_person_limit}</span>
+                  <span className="text-sm font-bold text-white">{plan.customer_limit}</span>
+                </div>
+
+                <div className="flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <Truck className="w-4 h-4 text-indigo-400" />
+                    <span className="text-xs font-semibold text-slate-400">Van Limit</span>
+                  </div>
+                  <span className="text-sm font-bold text-white">{plan.van_limit}</span>
+                </div>
+
+                <div className="flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <Warehouse className="w-4 h-4 text-indigo-400" />
+                    <span className="text-xs font-semibold text-slate-400">Warehouse Limit</span>
+                  </div>
+                  <span className="text-sm font-bold text-white">{plan.warehouse_limit}</span>
+                </div>
+
+                <div className="flex items-center justify-between p-3 bg-slate-950 rounded-xl border border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <CheckSquare className="w-4 h-4 text-indigo-400" />
+                    <span className="text-xs font-semibold text-slate-400">Category Management</span>
+                  </div>
+                  <span className={`text-xs font-bold ${plan.has_category_management ? 'text-green-400' : 'text-slate-500'}`}>
+                    {plan.has_category_management ? 'Yes' : 'No'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -261,7 +311,7 @@ export default function SubscriptionPlansPage() {
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setShowModal(false)} />
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-lg max-h-[90vh] shadow-2xl relative z-10 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200 text-slate-200">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-2xl max-h-[90vh] shadow-2xl relative z-10 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200 text-slate-200">
             <div className="px-8 py-6 border-b border-slate-800 flex justify-between items-center bg-slate-900">
               <h2 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
                 <Zap className="w-6 h-6 text-indigo-400" />
@@ -286,7 +336,33 @@ export default function SubscriptionPlansPage() {
                   />
                 </div>
 
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-widest">Description</label>
+                  <textarea
+                    className="w-full px-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium resize-none h-20"
+                    placeholder="Describe what this plan includes..."
+                    value={formData.description}
+                    onChange={e => setFormData({ ...formData, description: e.target.value })}
+                  />
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-widest">Price</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold">$</span>
+                      <input 
+                        type="number" 
+                        step="0.01"
+                        min="0"
+                        className="w-full pl-8 pr-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium" 
+                        placeholder="0.00"
+                        value={formData.price} 
+                        onChange={e => setFormData({ ...formData, price: e.target.value })} 
+                      />
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-widest">Product Limit</label>
                     <div className="relative">
@@ -298,6 +374,51 @@ export default function SubscriptionPlansPage() {
                         placeholder="0"
                         value={formData.product_limit} 
                         onChange={e => setFormData({ ...formData, product_limit: e.target.value })} 
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-widest">Customer Limit</label>
+                    <div className="relative">
+                      <Users2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                      <input 
+                        type="number" 
+                        min="0"
+                        className="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium" 
+                        placeholder="0"
+                        value={formData.customer_limit} 
+                        onChange={e => setFormData({ ...formData, customer_limit: e.target.value })} 
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-widest">Van Limit</label>
+                    <div className="relative">
+                      <Truck className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                      <input 
+                        type="number" 
+                        min="0"
+                        className="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium" 
+                        placeholder="0"
+                        value={formData.van_limit} 
+                        onChange={e => setFormData({ ...formData, van_limit: e.target.value })} 
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-widest">Warehouse Limit</label>
+                    <div className="relative">
+                      <Warehouse className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                      <input 
+                        type="number" 
+                        min="0"
+                        className="w-full pl-10 pr-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium" 
+                        placeholder="0"
+                        value={formData.warehouse_limit} 
+                        onChange={e => setFormData({ ...formData, warehouse_limit: e.target.value })} 
                       />
                     </div>
                   </div>
@@ -318,20 +439,17 @@ export default function SubscriptionPlansPage() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-widest">Price</label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-bold">$</span>
-                    <input 
-                      type="number" 
-                      step="0.01"
-                      min="0"
-                      className="w-full pl-8 pr-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium" 
-                      placeholder="0.00"
-                      value={formData.price} 
-                      onChange={e => setFormData({ ...formData, price: e.target.value })} 
-                    />
-                  </div>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="has_category_management"
+                    checked={formData.has_category_management}
+                    onChange={(e) => setFormData({ ...formData, has_category_management: e.target.checked })}
+                    className="w-4 h-4 text-indigo-600 bg-slate-950 border-slate-700 rounded focus:ring-indigo-500 focus:ring-offset-slate-900"
+                  />
+                  <label htmlFor="has_category_management" className="text-sm font-medium text-slate-200">
+                    Enable Category Management
+                  </label>
                 </div>
               </div>
 
