@@ -146,35 +146,35 @@ const hardwareProducts = [
     name: 'Zebra ZD420 Thermal Printer',
     description: 'High-performance direct thermal printer for labels and receipts',
     price: 299.99,
-    image: '/landing/pos-planning.jpg'
+    image: '/hardware/zebra-zd420.webp'
   },
   {
     id: 2,
     name: 'Honeywell Voyager 1470g Scanner',
     description: 'Handheld barcode scanner with USB connectivity',
     price: 149.99,
-    image: '/landing/warehouse-worker.jpg'
+    image: '/hardware/honeywell-voyager1470g.webp'
   },
   {
     id: 3,
     name: 'Star Micronics TSP143III Printer',
     description: 'Receipt printer with Auto-Cutter and USB interface',
     price: 249.99,
-    image: '/landing/tablet-warehouse.jpg'
+    image: '/hardware/zebra-zd420.webp'
   },
   {
     id: 4,
     name: 'Epson TM-T88VII Thermal Printer',
     description: 'Industry-standard high-speed receipt printer',
     price: 349.99,
-    image: '/landing/mobile-credibility.jpg'
+    image: '/hardware/zebra-zd420.webp'
   },
   {
     id: 5,
     name: 'Socket Mobile DuraScan Scanner',
     description: 'Wireless Bluetooth barcode scanner',
     price: 199.99,
-    image: '/landing/forklift-operations.jpg'
+    image: '/hardware/honeywell-voyager1470g.webp'
   },
 ];
 
