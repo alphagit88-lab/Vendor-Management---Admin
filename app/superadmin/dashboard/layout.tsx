@@ -45,20 +45,16 @@ export default function SuperAdminDashboardLayout({ children }: { children: Reac
       <aside className="w-72 bg-slate-900 border-r border-slate-800 flex flex-col fixed h-full z-20 shadow-[4px_0_24px_rgba(0,0,0,0.3)]">
           <div className="h-24 flex items-center justify-center px-4 border-b border-slate-800 shrink-0">
             <Link href="/superadmin/dashboard" className="w-full">
-              <div className="relative w-full h-16 bg-slate-900 rounded-xl shadow-md border border-slate-800 overflow-hidden flex items-center justify-center gap-3">
-                <div className="relative w-12 h-12 shrink-0">
+              <div className="relative w-full h-16 bg-slate-900 rounded-xl shadow-md border border-slate-800 overflow-hidden flex items-center justify-center px-4">
+                <div className="relative w-44 h-12 shrink-0">
                   <Image
-                    src="/lgo.jpeg"
+                    src="/lgon.jpeg"
                     alt="VendorOS Logo"
                     fill
-                    sizes="48px"
-                    className="object-cover rounded-md"
+                    sizes="176px"
+                    className="object-contain"
                     priority
                   />
-                </div>
-                <div className="flex flex-col text-left">
-                  <span className="text-[14px] font-black tracking-tight text-white uppercase leading-none">VendorOS</span>
-                  <span className="text-[9px] text-indigo-400 font-bold uppercase tracking-wider mt-0.5">Root Console</span>
                 </div>
               </div>
             </Link>

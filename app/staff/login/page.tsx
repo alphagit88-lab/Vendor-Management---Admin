@@ -48,14 +48,14 @@ export default function StaffLogin() {
       <div className="hidden lg:flex flex-col justify-center items-center bg-[#0f172a] text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-linear-to-br from-indigo-900/50 to-slate-900 pointer-events-none" />
         <div className="z-10 max-w-lg px-8 flex flex-col items-center justify-center">
-          <div className="w-32 h-32 relative overflow-hidden bg-white rounded-md shadow-lg border border-slate-700/50">
+          <div className="w-52 h-20 relative overflow-hidden bg-white rounded-md shadow-lg border border-slate-700/50">
             <div className="relative w-full h-full">
               <Image
-                src="/lgo.jpeg"
+                src="/lgon.jpeg"
                 alt="VendorOS"
                 fill
-                sizes="128px"
-                className="object-cover rounded-md"
+                sizes="208px"
+                className="object-contain rounded-md"
                 priority
               />
             </div>
@@ -76,9 +76,9 @@ export default function StaffLogin() {
         <div className="w-full max-w-md mx-auto space-y-10">
           <div className="text-center lg:text-left">
             <div className="lg:hidden flex justify-center mb-8">
-              <div className="w-24 h-24 relative overflow-hidden bg-white rounded-md shadow-md border border-gray-100">
+              <div className="w-48 h-16 relative overflow-hidden bg-white rounded-md shadow-md border border-gray-100">
                 <div className="relative w-full h-full">
-                  <Image src="/lgo.jpeg" alt="VendorOS" fill sizes="96px" className="object-cover rounded-md" />
+                  <Image src="/lgon.jpeg" alt="VendorOS" fill sizes="192px" className="object-contain rounded-md" />
                 </div>
               </div>
             </div>

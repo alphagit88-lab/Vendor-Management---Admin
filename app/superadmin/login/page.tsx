@@ -54,13 +54,13 @@ export default function SuperAdminLogin() {
         
         <div className="z-10 max-w-lg px-8 flex flex-col items-center justify-center text-center">
           <div className="relative p-0 bg-slate-900/80 rounded-xl shadow-2xl border border-indigo-500/30 backdrop-blur-xl animate-pulse">
-            <div className="w-32 h-32 relative overflow-hidden">
+            <div className="w-52 h-20 relative overflow-hidden">
               <Image
-                src="/lgo.jpeg"
+                src="/lgon.jpeg"
                 alt="VendorOS Logo"
                 fill
-                sizes="128px"
-                className="object-cover rounded-md filter brightness-95"
+                sizes="208px"
+                className="object-contain rounded-md filter brightness-95"
                 priority
               />
             </div>
@@ -94,8 +94,8 @@ export default function SuperAdminLogin() {
           <div className="text-center lg:text-left">
             <div className="lg:hidden flex justify-center mb-8">
               <div className="relative p-0 bg-slate-900/80 rounded-xl shadow-xl border border-indigo-500/20">
-                <div className="w-24 h-24 relative overflow-hidden">
-                  <Image src="/lgo.jpeg" alt="VendorOS Logo" fill sizes="96px" className="object-cover rounded-md" />
+                <div className="w-48 h-16 relative overflow-hidden">
+                  <Image src="/lgon.jpeg" alt="VendorOS Logo" fill sizes="192px" className="object-contain rounded-md" />
                 </div>
               </div>
             </div>

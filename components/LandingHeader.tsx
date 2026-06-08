@@ -8,7 +8,7 @@ import { ScanLine, Printer, Menu, X } from 'lucide-react';
 const navLinks = [
   { label: 'Home', href: '/#home' },
   { label: 'How It Works', href: '/#how-it-works' },
-  { label: 'Hardware', href: '/#hardware' },
+  { label: 'Hardware Shop', href: '/#hardware-shop' },
   { label: 'Pricing', href: '/#pricing' },
   { label: 'Support & Contact', href: '/#contact' },
 ];
@@ -42,14 +42,14 @@ export const LandingHeader = () => {
       <div className="border-b border-black/5 bg-[rgba(255,250,244,0.92)] shadow-[0_12px_36px_rgba(16,32,51,0.08)] backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
           <Link href="/#home" className="flex min-w-0 items-center gap-3" onClick={() => setMenuOpen(false)}>
-            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md border border-black/5 bg-white shadow-sm">
+            <div className="relative h-12 w-32 shrink-0 overflow-hidden rounded-md border border-black/5 bg-white shadow-sm">
               <Image
-                src="/lgo.jpeg"
+                src="/lgon.jpeg"
                 alt="Vendor Management logo"
                 fill
-                sizes="64px"
+                sizes="128px"
                 priority
-                className="object-cover"
+                className="object-contain"
               />
             </div>
             <div className="min-w-0">
