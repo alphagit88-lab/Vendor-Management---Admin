@@ -69,13 +69,6 @@ export default function SuperAdminLogin() {
             </div>
           </div>
 
-          <h1 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-200 via-slate-100 to-purple-200 mt-10">
-            VendorOS
-          </h1>
-          <p className="text-sm font-bold uppercase tracking-widest text-indigo-400 mt-2">
-            Super Administrator Portal
-          </p>
-
           <p className="text-slate-400 mt-6 mb-8 leading-relaxed max-w-md">
             Execute global configuration, manage system operators, and overview database metrics from a single secure workspace.
           </p>

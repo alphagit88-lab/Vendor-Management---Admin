@@ -52,14 +52,6 @@ export const LandingHeader = () => {
                 className="object-contain"
               />
             </div>
-            <div className="min-w-0">
-              <p className="truncate font-[family:var(--font-space-grotesk)] text-xl font-bold tracking-[-0.05em] text-[var(--landing-brand-strong)]">
-                SuperVendor
-              </p>
-              <p className="truncate text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[var(--landing-muted)]">
-                Scan. Sync. Print.
-              </p>
-            </div>
           </Link>
 
           <nav className="hidden items-center gap-1 lg:flex">
