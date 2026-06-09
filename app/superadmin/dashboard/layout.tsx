@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { LayoutDashboard, Users, LogOut, ShieldAlert, Settings, Zap } from 'lucide-react';
+import { LayoutDashboard, Users, LogOut, ShieldAlert, Zap, Package, ShoppingBag, CreditCard } from 'lucide-react';
 
 export default function SuperAdminDashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -37,6 +37,9 @@ export default function SuperAdminDashboardLayout({ children }: { children: Reac
     { name: 'Root Dashboard', href: '/superadmin/dashboard', icon: LayoutDashboard },
     { name: 'User Management', href: '/superadmin/dashboard/users', icon: Users },
     { name: 'Subscription Plans', href: '/superadmin/dashboard/subscription-plans', icon: Zap },
+    { name: 'Hardware Products', href: '/superadmin/dashboard/hardware-products', icon: Package },
+    { name: 'Shop Orders', href: '/superadmin/dashboard/shop-orders', icon: ShoppingBag },
+    { name: 'Subscription Payments', href: '/superadmin/dashboard/subscription-payments', icon: CreditCard },
   ];
 
   return (

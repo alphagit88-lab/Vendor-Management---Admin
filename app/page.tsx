@@ -140,43 +140,7 @@ const reasons = [
   },
 ];
 
-const hardwareProducts = [
-  {
-    id: 1,
-    name: 'Zebra ZD420 Thermal Printer',
-    description: 'High-performance direct thermal printer for labels and receipts',
-    price: 299.99,
-    image: '/hardware/zebra-zd420.webp'
-  },
-  {
-    id: 2,
-    name: 'Honeywell Voyager 1470g Scanner',
-    description: 'Handheld barcode scanner with USB connectivity',
-    price: 149.99,
-    image: '/hardware/honeywell-voyager1470g.webp'
-  },
-  {
-    id: 3,
-    name: 'Star Micronics TSP143III Printer',
-    description: 'Receipt printer with Auto-Cutter and USB interface',
-    price: 249.99,
-    image: '/hardware/zebra-zd420.webp'
-  },
-  {
-    id: 4,
-    name: 'Epson TM-T88VII Thermal Printer',
-    description: 'Industry-standard high-speed receipt printer',
-    price: 349.99,
-    image: '/hardware/zebra-zd420.webp'
-  },
-  {
-    id: 5,
-    name: 'Socket Mobile DuraScan Scanner',
-    description: 'Wireless Bluetooth barcode scanner',
-    price: 199.99,
-    image: '/hardware/honeywell-voyager1470g.webp'
-  },
-];
+
 
 const serviceCards = [
   {
@@ -803,70 +767,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="hardware-shop" className="scroll-mt-32 px-4 py-20 sm:px-6 lg:px-8 lg:py-24 bg-[var(--landing-bg)]">
-          <div className="mx-auto max-w-7xl">
-            <div className="mx-auto max-w-4xl text-center" data-reveal="zoom">
-              <p className="text-xs font-semibold uppercase tracking-[0.34em] text-[var(--landing-accent)]">
-                Hardware Shop
-              </p>
-              <h2 className="mt-4 font-[family:var(--font-space-grotesk)] text-4xl font-bold leading-[0.95] tracking-[-0.06em] text-[var(--landing-brand-strong)] sm:text-5xl">
-                Professional Equipment for Your Business
-              </h2>
-              <p className="mt-6 text-lg leading-8 text-[var(--landing-muted)]">
-                Get everything you need to run your operations smoothly — from printers to scanners, all in one place.
-              </p>
-            </div>
 
-            <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {hardwareProducts.map((product, index) => (
-                <article
-                  key={product.id}
-                  data-reveal="zoom"
-                  style={{ transitionDelay: `${index * 100}ms` }}
-                  className="group relative overflow-hidden rounded-[2.2rem] border border-black/6 bg-white shadow-[0_24px_64px_rgba(17,32,51,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-[rgba(29,65,96,0.3)] hover:shadow-[0_32px_72px_rgba(17,32,51,0.12)]"
-                >
-                  <div className="relative h-64 bg-[var(--landing-surface)] overflow-hidden">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      priority={index < 3}
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1.5 bg-[var(--landing-accent)] text-white text-[0.65rem] font-bold uppercase tracking-wider rounded-full">
-                        New
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-7">
-                    <h3 className="text-lg font-bold font-[family:var(--font-space-grotesk)] text-[var(--landing-brand-strong)]">
-                      {product.name}
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-[var(--landing-muted)]">
-                      {product.description}
-                    </p>
-
-                    <div className="mt-6 flex items-center justify-between">
-                      <span className="text-3xl font-bold font-[family:var(--font-space-grotesk)] tracking-[-0.05em] text-[var(--landing-brand-strong)]">
-                        ${product.price.toFixed(2)}
-                      </span>
-                    </div>
-
-                    <button
-                      className="mt-6 w-full flex items-center justify-center gap-2 rounded-full bg-[var(--landing-accent)] px-6 py-3 text-sm font-semibold text-white shadow-[0_14px_32px_rgba(200,108,73,0.25)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[var(--landing-accent)]/90 hover:shadow-[0_20px_40px_rgba(200,108,73,0.30)]"
-                    >
-                      <ShoppingCart className="h-4 w-4" />
-                      Buy Now
-                    </button>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
 
         <section id="pricing" className="scroll-mt-32 px-4 py-20 sm:px-6 lg:px-8 lg:py-24 bg-gradient-to-br from-[var(--landing-surface)] via-[var(--landing-surface-strong)] to-[var(--landing-bg)]">
           <div className="mx-auto max-w-7xl">

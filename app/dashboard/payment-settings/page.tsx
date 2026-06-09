@@ -1,44 +1,48 @@
 "use client";
+
 import { useState, useEffect } from 'react';
-import { CreditCard, CheckCircle2, Loader2, ShieldCheck, Calendar, ArrowRight, Check } from 'lucide-react';
+import { CheckCircle2, Loader2, ShieldCheck, ArrowRight, Check, CreditCard } from 'lucide-react';
 import { API_URL } from '@/lib/config';
+import {
+  fetchSubscriptionStatus,
+  requestPlanChange,
+  type SubscriptionPlan,
+} from '@/lib/subscriptions';
 
 export default function PaymentSettingsPage() {
   const [loading, setLoading] = useState(true);
-  const [plans, setPlans] = useState<any[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<number | null>(null);
-  const [currentPlan, setCurrentPlan] = useState<any>(null);
-
-  // Mock subscription data
-  const mockSubscription = {
-    planId: 2,
-    nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-  };
-
-  // Mock card info
-  const mockCardInfo = {
-    last4: '4242',
-    brand: 'Visa',
-    expiryMonth: '12',
-    expiryYear: '2028',
-    cardholderName: 'John Doe',
-  };
+  const [currentPlanId, setCurrentPlanId] = useState<number | null>(null);
+  const [currentPlan, setCurrentPlan] = useState<SubscriptionPlan | null>(null);
+  const [paidPlanIds, setPaidPlanIds] = useState<number[]>([]);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchPlans();
+    loadData();
   }, []);
 
-  const fetchPlans = async () => {
+  const loadData = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      const response = await fetch(`${API_URL}/subscription-plans/public`);
-      const data = await response.json();
-      if (data.success) {
-        setPlans(data.data);
-        setSelectedPlan(mockSubscription.planId);
-        setCurrentPlan(data.data.find((p: any) => p.id === mockSubscription.planId));
+      const [plansRes, status] = await Promise.all([
+        fetch(`${API_URL}/subscription-plans/public`).then((r) => r.json()),
+        fetchSubscriptionStatus(),
+      ]);
+
+      if (plansRes.success) {
+        setPlans(plansRes.data);
       }
-    } catch (error) {
-      console.error('Failed to fetch plans:', error);
+
+      setCurrentPlanId(status.currentPlanId);
+      setCurrentPlan(status.subscriptionPlan);
+      setPaidPlanIds(status.paidPlanIds);
+      setSelectedPlan(status.currentPlanId);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load subscription data');
     } finally {
       setLoading(false);
     }
@@ -46,10 +50,39 @@ export default function PaymentSettingsPage() {
 
   const handlePlanSelect = (planId: number) => {
     setSelectedPlan(planId);
+    setMessage(null);
+    setError(null);
   };
 
-  const handleConfirmChange = () => {
-    alert('Subscription change UI only - backend implementation not done yet!');
+  const selectedPlanData = plans.find((p) => p.id === selectedPlan);
+  const needsPayment =
+    selectedPlan !== null &&
+    selectedPlan !== currentPlanId &&
+    selectedPlanData &&
+    Number(selectedPlanData.price) > 0 &&
+    !paidPlanIds.includes(selectedPlan);
+
+  const handleConfirmChange = async () => {
+    if (!selectedPlan) return;
+    setSubmitting(true);
+    setMessage(null);
+    setError(null);
+
+    try {
+      const result = await requestPlanChange(selectedPlan);
+
+      if (result.action === 'checkout' && result.checkoutUrl) {
+        window.location.href = result.checkoutUrl;
+        return;
+      }
+
+      setMessage(result.message || 'Plan updated successfully.');
+      await loadData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Plan change failed');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -64,69 +97,50 @@ export default function PaymentSettingsPage() {
     <div className="max-w-6xl mx-auto space-y-8">
       <div>
         <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2 uppercase">Payment & Subscription</h1>
-        <p className="text-slate-500 font-medium">Manage your subscription plan and payment methods.</p>
+        <p className="text-slate-500 font-medium">
+          One-time subscription purchase. Plans are assigned after successful Stripe payment.
+        </p>
       </div>
 
-      {/* Current Plan Overview */}
+      {error && (
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
+      {message && (
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+          {message}
+        </div>
+      )}
+
       <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-2xl p-8 text-white shadow-xl shadow-indigo-200">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div>
             <p className="text-indigo-200 text-xs font-black uppercase tracking-widest mb-2">Current Plan</p>
-            <h3 className="text-3xl font-black tracking-tight mb-2">{currentPlan?.name}</h3>
+            <h3 className="text-3xl font-black tracking-tight mb-2">{currentPlan?.name || 'No plan assigned'}</h3>
             <p className="text-indigo-100 text-sm font-medium">{currentPlan?.description}</p>
-            <div className="mt-4 flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-indigo-200" />
-                <span className="text-sm font-semibold">Next billing: {mockSubscription.nextBillingDate}</span>
-              </div>
-            </div>
           </div>
           <div className="text-right">
             <div className="text-5xl font-black">
               ${Number(currentPlan?.price || 0).toFixed(2)}
             </div>
-            <p className="text-indigo-200 text-xs font-semibold uppercase tracking-wide">per period</p>
+            <p className="text-indigo-200 text-xs font-semibold uppercase tracking-wide">one-time</p>
           </div>
         </div>
       </div>
 
-      {/* Card Info Section */}
       <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
-        <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <CreditCard className="w-5 h-5 text-indigo-600" />
-            <h2 className="text-xl font-black text-slate-900 tracking-tight">Payment Method</h2>
-          </div>
-          <button className="text-indigo-600 hover:text-indigo-700 text-sm font-black uppercase tracking-wide transition-colors">
-            Update Card
-          </button>
+        <div className="px-8 py-6 border-b border-gray-100 flex items-center gap-3">
+          <CreditCard className="w-5 h-5 text-indigo-600" />
+          <h2 className="text-xl font-black text-slate-900 tracking-tight">Payment via Stripe</h2>
         </div>
-        <div className="p-8">
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 text-white max-w-md shadow-2xl">
-            <div className="flex justify-between items-start mb-8">
-              <div className="flex flex-col gap-1">
-                <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Cardholder</span>
-                <span className="text-lg font-semibold tracking-wide">{mockCardInfo.cardholderName}</span>
-              </div>
-              <div className="text-right">
-                <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Expires</span>
-                <div className="text-lg font-semibold">{mockCardInfo.expiryMonth}/{mockCardInfo.expiryYear.slice(-2)}</div>
-              </div>
-            </div>
-            <div className="flex items-end justify-between">
-              <div className="flex flex-col gap-1">
-                <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Card Number</span>
-                <span className="text-2xl font-mono tracking-[0.3em]">•••• •••• •••• {mockCardInfo.last4}</span>
-              </div>
-              <div className="text-3xl font-black italic">
-                {mockCardInfo.brand}
-              </div>
-            </div>
-          </div>
+        <div className="p-8 text-sm text-slate-600 leading-relaxed">
+          Subscription payments are processed securely by Stripe as a <strong>one-time purchase</strong>.
+          If you have already paid for a plan, you can switch back to it without paying again.
+          Selecting a new paid plan will redirect you to Stripe checkout before the plan is assigned.
         </div>
       </div>
 
-      {/* Plan Selection Section */}
       <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden">
         <div className="px-8 py-6 border-b border-gray-100">
           <div className="flex items-center gap-3">
@@ -138,7 +152,8 @@ export default function PaymentSettingsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {plans.map((plan) => {
               const isSelected = selectedPlan === plan.id;
-              const isCurrent = plan.id === mockSubscription.planId;
+              const isCurrent = plan.id === currentPlanId;
+              const alreadyPaid = paidPlanIds.includes(plan.id);
               return (
                 <div
                   key={plan.id}
@@ -154,6 +169,11 @@ export default function PaymentSettingsPage() {
                       Current
                     </div>
                   )}
+                  {alreadyPaid && !isCurrent && (
+                    <div className="absolute -top-3 right-6 bg-blue-500 text-white text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full">
+                      Paid
+                    </div>
+                  )}
                   {plan.is_popular && (
                     <div className="absolute -top-3 right-6 bg-amber-500 text-white text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full">
                       Popular
@@ -167,30 +187,19 @@ export default function PaymentSettingsPage() {
                     <div className="text-4xl font-black text-slate-900 tracking-tight">
                       ${Number(plan.price).toFixed(2)}
                     </div>
+                    <p className="text-xs text-slate-400 font-semibold uppercase mt-1">one-time</p>
                   </div>
                   <ul className="space-y-3 mb-6">
-                    {(plan.customer_limit ?? 0) > 0 && (
-                      <li className="flex items-start gap-2 text-sm">
-                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                        <span className="text-slate-600"><strong>Customers:</strong> Up to {plan.customer_limit}</span>
-                      </li>
-                    )}
                     {(plan.product_limit ?? 0) > 0 && (
                       <li className="flex items-start gap-2 text-sm">
                         <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                         <span className="text-slate-600"><strong>Products:</strong> Up to {plan.product_limit}</span>
                       </li>
                     )}
-                    {(plan.van_limit ?? 0) > 0 && (
+                    {(plan.sales_person_limit ?? 0) > 0 && (
                       <li className="flex items-start gap-2 text-sm">
                         <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                        <span className="text-slate-600"><strong>Vans:</strong> Up to {plan.van_limit}</span>
-                      </li>
-                    )}
-                    {(plan.warehouse_limit ?? 0) > 0 && (
-                      <li className="flex items-start gap-2 text-sm">
-                        <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                        <span className="text-slate-600"><strong>Warehouses:</strong> Up to {plan.warehouse_limit}</span>
+                        <span className="text-slate-600"><strong>Sales staff:</strong> Up to {plan.sales_person_limit}</span>
                       </li>
                     )}
                   </ul>
@@ -208,22 +217,39 @@ export default function PaymentSettingsPage() {
               );
             })}
           </div>
-          {selectedPlan !== mockSubscription.planId && (
-            <div className="bg-amber-50 border border-amber-100 rounded-xl p-6 flex items-start gap-4 mb-6">
+
+          {selectedPlan !== null && selectedPlan !== currentPlanId && (
+            <div className="bg-amber-50 border border-amber-100 rounded-xl p-6 flex items-start gap-4">
               <div className="bg-amber-100 rounded-full p-2 h-fit">
                 <CheckCircle2 className="w-5 h-5 text-amber-600" />
               </div>
-              <div>
-                <h4 className="text-amber-900 font-black text-sm uppercase tracking-tight mb-2">Ready to Change Plans</h4>
+              <div className="flex-1">
+                <h4 className="text-amber-900 font-black text-sm uppercase tracking-tight mb-2">
+                  {needsPayment ? 'Payment Required' : 'Ready to Change Plan'}
+                </h4>
                 <p className="text-amber-700 text-sm font-medium leading-relaxed mb-4">
-                  You've selected a new plan. Review your choice and confirm to proceed.
+                  {needsPayment
+                    ? `You will be redirected to Stripe to pay $${Number(selectedPlanData?.price || 0).toFixed(2)} for the ${selectedPlanData?.name} plan. Your plan is assigned only after payment succeeds.`
+                    : paidPlanIds.includes(selectedPlan!)
+                      ? 'You have already paid for this plan. Confirm to switch without additional payment.'
+                      : 'This is a free plan. Confirm to assign it immediately.'}
                 </p>
                 <button
                   onClick={handleConfirmChange}
-                  className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-black uppercase tracking-widest text-xs transition-all duration-200 shadow-lg shadow-indigo-200 active:scale-[0.98]"
+                  disabled={submitting}
+                  className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white px-6 py-3 rounded-xl font-black uppercase tracking-widest text-xs transition-all duration-200 shadow-lg shadow-indigo-200"
                 >
-                  Confirm Plan Change
-                  <ArrowRight className="w-4 h-4" />
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      {needsPayment ? 'Pay with Stripe' : 'Confirm Plan Change'}
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </div>
             </div>
