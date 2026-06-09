@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { ArrowRight, Lock, User, Eye, EyeOff, ShieldAlert } from 'lucide-react';
@@ -57,7 +58,7 @@ export default function SuperAdminLogin() {
             <div className="w-52 h-20 relative overflow-hidden">
               <Image
                 src="/lgon.jpeg"
-                alt="VendorOS Logo"
+                alt="SuperVendor Logo"
                 fill
                 sizes="208px"
                 className="object-contain rounded-md filter brightness-95"
@@ -88,7 +89,7 @@ export default function SuperAdminLogin() {
             <div className="lg:hidden flex justify-center mb-8">
               <div className="relative p-0 bg-slate-900/80 rounded-xl shadow-xl border border-indigo-500/20">
                 <div className="w-48 h-16 relative overflow-hidden">
-                  <Image src="/lgon.jpeg" alt="VendorOS Logo" fill sizes="192px" className="object-contain rounded-md" />
+                  <Image src="/lgon.jpeg" alt="SuperVendor Logo" fill sizes="192px" className="object-contain rounded-md" />
                 </div>
               </div>
             </div>
@@ -146,6 +147,14 @@ export default function SuperAdminLogin() {
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
+                </div>
+                <div className="flex justify-end mt-1">
+                  <Link
+                    href="/forgot-password?return=/superadmin/login"
+                    className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
+                  >
+                    Forgot password?
+                  </Link>
                 </div>
               </div>
             </div>

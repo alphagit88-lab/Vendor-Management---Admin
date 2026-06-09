@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { ArrowRight, Lock, Phone, Eye, EyeOff, Mail, User, X, CheckCircle2 } from 'lucide-react';
@@ -136,7 +137,7 @@ function LoginContent() {
             <div className="relative w-full h-full">
               <Image
                 src="/lgon.jpeg"
-                alt="VendorOS"
+                alt="SuperVendor"
                 fill
                 sizes="208px"
                 className="object-contain rounded-md"
@@ -161,7 +162,7 @@ function LoginContent() {
             <div className="lg:hidden flex justify-center mb-8">
               <div className="w-48 h-16 relative overflow-hidden bg-white rounded-md shadow-md border border-gray-100">
                 <div className="relative w-full h-full">
-                  <Image src="/lgon.jpeg" alt="VendorOS" fill sizes="192px" className="object-contain rounded-md" />
+                  <Image src="/lgon.jpeg" alt="SuperVendor" fill sizes="192px" className="object-contain rounded-md" />
                 </div>
               </div>
             </div>
@@ -215,6 +216,14 @@ function LoginContent() {
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
+                </div>
+                <div className="flex justify-end mt-1">
+                  <Link
+                    href="/forgot-password?return=/login"
+                    className="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
+                  >
+                    Forgot password?
+                  </Link>
                 </div>
               </div>
             </div>

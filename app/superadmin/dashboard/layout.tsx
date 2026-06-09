@@ -52,7 +52,7 @@ export default function SuperAdminDashboardLayout({ children }: { children: Reac
                 <div className="relative w-44 h-12 shrink-0">
                   <Image
                     src="/lgon.jpeg"
-                    alt="VendorOS Logo"
+                    alt="SuperVendor Logo"
                     fill
                     sizes="176px"
                     className="object-contain"

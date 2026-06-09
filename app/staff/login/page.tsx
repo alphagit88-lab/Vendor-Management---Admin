@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { ArrowRight, Lock, Mail, UserCircle, Eye, EyeOff } from 'lucide-react';
@@ -52,7 +53,7 @@ export default function StaffLogin() {
             <div className="relative w-full h-full">
               <Image
                 src="/lgon.jpeg"
-                alt="VendorOS"
+                alt="SuperVendor"
                 fill
                 sizes="208px"
                 className="object-contain rounded-md"
@@ -78,7 +79,7 @@ export default function StaffLogin() {
             <div className="lg:hidden flex justify-center mb-8">
               <div className="w-48 h-16 relative overflow-hidden bg-white rounded-md shadow-md border border-gray-100">
                 <div className="relative w-full h-full">
-                  <Image src="/lgon.jpeg" alt="VendorOS" fill sizes="192px" className="object-contain rounded-md" />
+                  <Image src="/lgon.jpeg" alt="SuperVendor" fill sizes="192px" className="object-contain rounded-md" />
                 </div>
               </div>
             </div>
@@ -132,6 +133,14 @@ export default function StaffLogin() {
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
+                </div>
+                <div className="flex justify-end mt-1">
+                  <Link
+                    href="/forgot-password?method=email&return=/staff/login"
+                    className="text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:text-indigo-700 transition-colors"
+                  >
+                    Forgot password?
+                  </Link>
                 </div>
               </div>
             </div>

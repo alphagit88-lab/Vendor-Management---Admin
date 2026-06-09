@@ -60,7 +60,7 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
                 <div className="relative h-12 w-40 bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden">
                   <Image
                     src="/lgon.jpeg"
-                    alt="VendorOS Logo"
+                    alt="SuperVendor Logo"
                     fill
                     sizes="160px"
                     className="object-contain rounded-md"
