@@ -92,11 +92,32 @@ export const LandingFooter = () => {
                 Login
                 <ArrowRight className="h-4 w-4" />
               </Link>
+              <div className="mt-6 flex flex-col gap-3">
+                <a href="#" className="inline-block">
+                  <img
+                    src="/and-lgo.png"
+                    alt="Get it on Google Play"
+                    className="h-14 object-contain"
+                  />
+                </a>
+                <a href="#" className="inline-block">
+                  <img
+                    src="/apl-str-lgo.png"
+                    alt="Download on the App Store"
+                    className="h-14 object-contain"
+                  />
+                </a>
+              </div>
             </div>
           </div>
 
-          <div className="mt-12 border-t border-white/10 pt-6 text-sm text-white/52 flex flex-col sm:flex-row sm:justify-center items-center gap-4">
+          <div className="mt-12 border-t border-white/10 pt-6 text-sm text-white/52 flex flex-col sm:flex-row sm:justify-between items-center gap-4">
             <span>Copyright {currentYear} SuperVendor.</span>
+            <img
+              src="/visa-master-lgos.png"
+              alt="Visa and Mastercard accepted"
+              className="h-8 object-contain"
+            />
           </div>
         </div>
       </footer>

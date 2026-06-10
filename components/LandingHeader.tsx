@@ -58,18 +58,16 @@ export const LandingHeader = () => {
       </div>
 
       <div className="border-b border-black/5 bg-[rgba(255,250,244,0.92)] shadow-[0_12px_36px_rgba(16,32,51,0.08)] backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-          <Link href="/#home" className="flex min-w-0 items-center gap-3" onClick={() => setMenuOpen(false)}>
-            <div className="relative h-12 w-32 shrink-0 overflow-hidden rounded-md border border-black/5 bg-white shadow-sm">
-              <Image
-                src="/lgon.jpeg"
-                alt="Vendor Management logo"
-                fill
-                sizes="128px"
-                priority
-                className="object-contain"
-              />
-            </div>
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 h-24">
+          <Link href="/#home" className="flex min-w-0 items-center h-full" onClick={() => setMenuOpen(false)}>
+            <Image
+              src="/lgon-crp.jpeg"
+              alt="Vendor Management logo"
+              width={160}
+              height={80}
+              priority
+              className="h-full w-auto object-contain"
+            />
           </Link>
 
           <nav className="hidden items-center gap-1 lg:flex">
@@ -77,7 +75,7 @@ export const LandingHeader = () => {
               <Link
                 key={link.label}
                 href={link.href}
-                className="rounded-full px-4 py-2 text-sm font-medium text-[var(--landing-muted)] transition hover:bg-[var(--landing-accent-soft)] hover:text-[var(--landing-brand-strong)]"
+                className="rounded-full px-4 py-2 text-sm font-medium text-black transition hover:bg-[var(--landing-accent-soft)] hover:text-[var(--landing-brand-strong)]"
               >
                 {link.label}
               </Link>
