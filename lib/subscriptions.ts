@@ -32,7 +32,8 @@ export type PlanChangeResult = {
   action: 'already_assigned' | 'assigned' | 'checkout';
   message?: string;
   planId?: number;
-  checkoutUrl?: string;
+  clientSecret?: string;
+  sessionId?: string;
   purchaseId?: number;
   amount?: number;
 };

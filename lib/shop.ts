@@ -91,7 +91,7 @@ export async function createCheckoutSession(payload: {
     phone?: string;
     shippingAddress: string;
   };
-}): Promise<{ checkoutUrl: string; orderId: number; orderNumber: string }> {
+}): Promise<{ clientSecret: string; orderId: number; orderNumber: string; sessionId: string }> {
   const res = await fetch(`${API_URL}/shop/checkout`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

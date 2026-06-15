@@ -47,7 +47,7 @@ export default function CartPage() {
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="mb-8">
             <Link
-              href="/hardware-shop"
+              href="/shop"
               className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--landing-brand-strong)] hover:text-[var(--landing-accent)] transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -69,7 +69,7 @@ export default function CartPage() {
                 Your cart is empty
               </h2>
               <Link
-                href="/hardware-shop"
+                href="/shop"
                 className="inline-flex items-center justify-center rounded-full bg-[var(--landing-accent)] px-8 py-4 text-lg font-semibold text-white shadow-[0_18px_48px_rgba(200,108,73,0.30)] transition-all duration-200 hover:-translate-y-0.5"
               >
                 Start Shopping
@@ -94,7 +94,7 @@ export default function CartPage() {
                     </div>
                     <div className="flex-1">
                       <Link
-                        href={`/hardware-shop/${item.slug}`}
+                        href={`/shop/${item.slug}`}
                         className="text-xl font-bold font-[family:var(--font-space-grotesk)] text-[var(--landing-brand-strong)] hover:text-[var(--landing-accent)] transition-colors"
                       >
                         {item.name}

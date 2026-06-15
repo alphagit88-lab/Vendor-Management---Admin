@@ -2,16 +2,45 @@
 
 import { useState, useEffect } from 'react';
 import { CheckCircle2, Loader2, ShieldCheck, ArrowRight, Check, CreditCard } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { API_URL } from '@/lib/config';
 import {
   fetchSubscriptionStatus,
   requestPlanChange,
   type SubscriptionPlan,
 } from '@/lib/subscriptions';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
-export default function PaymentSettingsPage() {
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+
+const cardElementOptions = {
+  style: {
+    base: {
+      color: '#112033',
+      fontFamily: 'Inter, sans-serif',
+      fontSmoothing: 'antialiased',
+      fontSize: '15px',
+      '::placeholder': {
+        color: '#aab7c4',
+      },
+    },
+    invalid: {
+      color: '#ef4444',
+      iconColor: '#ef4444',
+    },
+  },
+  hidePostalCode: true,
+};
+
+function PaymentSettingsPageInner() {
+  const router = useRouter();
+  const stripe = useStripe();
+  const elements = useElements();
+
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [paying, setPaying] = useState(false);
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<number | null>(null);
   const [currentPlanId, setCurrentPlanId] = useState<number | null>(null);
@@ -19,6 +48,7 @@ export default function PaymentSettingsPage() {
   const [paidPlanIds, setPaidPlanIds] = useState<number[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [paymentState, setPaymentState] = useState<{ clientSecret: string; sessionId: string } | null>(null);
 
   useEffect(() => {
     loadData();
@@ -52,6 +82,7 @@ export default function PaymentSettingsPage() {
     setSelectedPlan(planId);
     setMessage(null);
     setError(null);
+    setPaymentState(null);
   };
 
   const selectedPlanData = plans.find((p) => p.id === selectedPlan);
@@ -71,8 +102,11 @@ export default function PaymentSettingsPage() {
     try {
       const result = await requestPlanChange(selectedPlan);
 
-      if (result.action === 'checkout' && result.checkoutUrl) {
-        window.location.href = result.checkoutUrl;
+      if (result.action === 'checkout' && result.clientSecret) {
+        setPaymentState({
+          clientSecret: result.clientSecret,
+          sessionId: result.sessionId || '',
+        });
         return;
       }
 
@@ -82,6 +116,39 @@ export default function PaymentSettingsPage() {
       setError(err instanceof Error ? err.message : 'Plan change failed');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleStripePayment = async () => {
+    if (!stripe || !elements || !paymentState) return;
+    setPaying(true);
+    setError(null);
+
+    try {
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) throw new Error('Card input element not found');
+
+      const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(
+        paymentState.clientSecret,
+        {
+          payment_method: {
+            card: cardElement,
+          },
+        }
+      );
+
+      if (confirmError) {
+        throw new Error(confirmError.message || 'Payment failed');
+      }
+
+      if (paymentIntent && paymentIntent.status === 'succeeded') {
+        router.push(`/dashboard/payment-settings/success?session_id=${paymentIntent.id}`);
+      } else {
+        throw new Error('Payment processing failed. Please try again.');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Payment failed');
+      setPaying(false);
     }
   };
 
@@ -98,7 +165,7 @@ export default function PaymentSettingsPage() {
       <div>
         <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-2 uppercase">Payment & Subscription</h1>
         <p className="text-slate-500 font-medium">
-          One-time subscription purchase. Plans are assigned after successful Stripe payment.
+          One-time subscription purchase. Plans are assigned after successful card payment.
         </p>
       </div>
 
@@ -137,7 +204,7 @@ export default function PaymentSettingsPage() {
         <div className="p-8 text-sm text-slate-600 leading-relaxed">
           Subscription payments are processed securely by Stripe as a <strong>one-time purchase</strong>.
           If you have already paid for a plan, you can switch back to it without paying again.
-          Selecting a new paid plan will redirect you to Stripe checkout before the plan is assigned.
+          Selecting a new paid plan will allow you to complete payment using secure inline Card fields.
         </div>
       </div>
 
@@ -229,33 +296,70 @@ export default function PaymentSettingsPage() {
                 </h4>
                 <p className="text-amber-700 text-sm font-medium leading-relaxed mb-4">
                   {needsPayment
-                    ? `You will be redirected to Stripe to pay $${Number(selectedPlanData?.price || 0).toFixed(2)} for the ${selectedPlanData?.name} plan. Your plan is assigned only after payment succeeds.`
+                    ? `Please enter your credit card information below to pay $${Number(selectedPlanData?.price || 0).toFixed(2)} for the ${selectedPlanData?.name} plan.`
                     : paidPlanIds.includes(selectedPlan!)
                       ? 'You have already paid for this plan. Confirm to switch without additional payment.'
                       : 'This is a free plan. Confirm to assign it immediately.'}
                 </p>
-                <button
-                  onClick={handleConfirmChange}
-                  disabled={submitting}
-                  className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white px-6 py-3 rounded-xl font-black uppercase tracking-widest text-xs transition-all duration-200 shadow-lg shadow-indigo-200"
-                >
-                  {submitting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      {needsPayment ? 'Pay with Stripe' : 'Confirm Plan Change'}
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
+
+                {needsPayment && paymentState && (
+                  <div className="mt-4 border-t border-amber-200 pt-4 space-y-4">
+                    <label className="block text-sm font-semibold text-slate-800">Card Information</label>
+                    <div className="w-full max-w-md rounded-xl border border-gray-300 px-4 py-3 bg-white focus-within:border-indigo-600 transition-colors">
+                      <CardElement options={cardElementOptions} />
+                    </div>
+                    <button
+                      onClick={handleStripePayment}
+                      disabled={paying || !stripe}
+                      className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white px-6 py-3 rounded-xl font-black uppercase tracking-widest text-xs transition-all duration-200 shadow-lg"
+                    >
+                      {paying ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Paying...
+                        </>
+                      ) : (
+                        <>
+                          <span>Securely Pay ${Number(selectedPlanData?.price || 0).toFixed(2)}</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
+
+                {(!needsPayment || !paymentState) && (
+                  <button
+                    onClick={handleConfirmChange}
+                    disabled={submitting}
+                    className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white px-6 py-3 rounded-xl font-black uppercase tracking-widest text-xs transition-all duration-200 shadow-lg shadow-indigo-200"
+                  >
+                    {submitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        {needsPayment ? 'Initiate Payment' : 'Confirm Plan Change'}
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
             </div>
           )}
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentSettingsPage() {
+  return (
+    <Elements stripe={stripePromise}>
+      <PaymentSettingsPageInner />
+    </Elements>
   );
 }

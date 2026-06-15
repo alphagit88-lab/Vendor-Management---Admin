@@ -59,7 +59,7 @@ export default function ShopPage() {
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="font-[family:var(--font-space-grotesk)] text-4xl font-bold leading-[0.95] tracking-[-0.06em] text-[var(--landing-brand-strong)] sm:text-5xl">
-              Hardware Shop
+              Shop
             </h1>
             <p className="mt-4 text-lg leading-8 text-[var(--landing-muted)]">
               Professional equipment for your delivery operations.
@@ -77,7 +77,7 @@ export default function ShopPage() {
                   key={product.id}
                   className="group relative overflow-hidden rounded-[2.2rem] border border-black/6 bg-white shadow-[0_24px_64px_rgba(17,32,51,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-[rgba(29,65,96,0.3)] hover:shadow-[0_32px_72px_rgba(17,32,51,0.12)]"
                 >
-                  <Link href={`/hardware-shop/${product.slug}`}>
+                  <Link href={`/shop/${product.slug}`}>
                     <div className="relative h-64 bg-[var(--landing-surface)] overflow-hidden">
                       <MediaImage
                         src={product.image}
@@ -91,7 +91,7 @@ export default function ShopPage() {
                   </Link>
 
                   <div className="p-6">
-                    <Link href={`/hardware-shop/${product.slug}`}>
+                    <Link href={`/shop/${product.slug}`}>
                       <h3 className="text-lg font-bold font-[family:var(--font-space-grotesk)] text-[var(--landing-brand-strong)] hover:text-[var(--landing-accent)] transition-colors">
                         {product.name}
                       </h3>
@@ -111,7 +111,7 @@ export default function ShopPage() {
 
                     <div className="mt-4 flex gap-3">
                       <Link
-                        href={`/hardware-shop/${product.slug}`}
+                        href={`/shop/${product.slug}`}
                         className="flex-1 flex items-center justify-center gap-2 rounded-full border border-[var(--landing-accent-soft)] px-4 py-2.5 text-sm font-semibold text-[var(--landing-brand-strong)] hover:bg-[var(--landing-accent-soft)] transition-all duration-200"
                       >
                         View Details

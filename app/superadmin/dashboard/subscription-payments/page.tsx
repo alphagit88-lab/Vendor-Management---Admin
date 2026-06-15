@@ -77,7 +77,7 @@ export default function SubscriptionPaymentsPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white tracking-tight">Subscription Payments</h1>
         <p className="text-slate-400 mt-1">
-          One-time subscription purchases via Stripe. Separate from hardware shop orders.
+          One-time subscription purchases via Stripe. Separate from shop orders.
         </p>
       </div>
 

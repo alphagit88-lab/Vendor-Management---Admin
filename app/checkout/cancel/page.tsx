@@ -39,7 +39,7 @@ export default function CheckoutCancelPage() {
           <Link href="/cart" className="rounded-full bg-[var(--landing-accent)] px-8 py-4 font-semibold text-white">
             Back to Cart
           </Link>
-          <Link href="/hardware-shop" className="rounded-full border border-black/10 bg-white px-8 py-4 font-semibold text-[var(--landing-brand-strong)]">
+          <Link href="/shop" className="rounded-full border border-black/10 bg-white px-8 py-4 font-semibold text-[var(--landing-brand-strong)]">
             Continue Shopping
           </Link>
         </div>

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { Plus, ClipboardList, Search, Eye, Trash2, Truck } from 'lucide-react';
+import { Plus, ClipboardList, Search, Eye, Trash2, Truck, Download } from 'lucide-react';
 import { API_URL } from '@/lib/config';
 import ConfirmModal from '@/components/ConfirmModal';
 import OrderDetailsModal from '@/components/OrderDetailsModal';
@@ -60,6 +60,26 @@ export default function OrdersPage() {
       console.error(err);
     } finally {
       setIsFetchingDetail(false);
+    }
+  };
+
+  const handleDownloadTXT = async (id: number, orderNumber: string) => {
+    try {
+      const res = await fetch(`${API_URL}/orders/${id}/txt`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      if (!res.ok) throw new Error('Download failed');
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `invoice_${orderNumber}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('TXT download error:', err);
     }
   };
 
@@ -141,7 +161,7 @@ export default function OrdersPage() {
           )}
         </div>
 
-        <div className="">
+        <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
@@ -194,15 +214,22 @@ export default function OrdersPage() {
                   </td>
                   <td className="px-4 py-1 whitespace-nowrap text-right">
                     <div className="flex items-center justify-end gap-1">
-                      <button 
+                      <button
+                        onClick={() => handleDownloadTXT(o.id, o.order_number)}
+                        className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg transition-all font-medium"
+                        title="Download TXT"
+                      >
+                        <Download className="w-4 h-4" />
+                      </button>
+                      <button
                         onClick={() => handleViewDetails(o.id)}
                         disabled={isFetchingDetail}
-                        className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium disabled:opacity-50" 
+                        className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-medium disabled:opacity-50"
                         title="View Details"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleDelete(o.id)}
                         className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-all font-medium"
                         title="Void Order"

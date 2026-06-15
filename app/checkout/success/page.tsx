@@ -107,7 +107,7 @@ function SuccessContent() {
       </div>
 
       <Link
-        href="/hardware-shop"
+        href="/shop"
         className="mt-8 inline-flex items-center justify-center rounded-full bg-[var(--landing-accent)] px-8 py-4 text-lg font-semibold text-white"
       >
         Continue Shopping

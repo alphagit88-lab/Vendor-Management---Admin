@@ -10,7 +10,7 @@ import { MediaImage } from '@/components/MediaImage';
 const navLinks = [
   { label: 'Home', href: '/#home' },
   { label: 'How It Works', href: '/#how-it-works' },
-  { label: 'Hardware Shop', href: '/hardware-shop' },
+  { label: 'Shop', href: '/shop' },
   { label: 'Pricing', href: '/#pricing' },
   { label: 'Support & Contact', href: '/#contact' },
 ];

@@ -65,7 +65,7 @@ export default function ProductDetailsPage() {
         <main className="pt-[116px] flex flex-col items-center justify-center">
           <div className="text-center">
             <h1 className="font-[family:var(--font-space-grotesk)] text-2xl font-bold text-[var(--landing-brand-strong)]">Product Not Found</h1>
-            <Link href="/hardware-shop" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[var(--landing-accent)] hover:underline">
+            <Link href="/shop" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[var(--landing-accent)] hover:underline">
               Go Back to Shop
             </Link>
           </div>

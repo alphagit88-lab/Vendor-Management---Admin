@@ -139,7 +139,7 @@ export default function ShopOrdersPage() {
     <div>
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white tracking-tight">Shop Orders</h1>
-        <p className="text-slate-400 mt-1">View and manage hardware shop orders from Stripe checkout.</p>
+        <p className="text-slate-400 mt-1">View and manage shop orders from Stripe checkout.</p>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
