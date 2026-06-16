@@ -1,7 +1,7 @@
 'use client';
 
 import type { CSSProperties, FormEvent } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Space_Grotesk } from 'next/font/google';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -52,6 +52,29 @@ const cardElementOptions = {
   hidePostalCode: true,
 };
 
+const COUNTRIES = [
+  'Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola', 'Antigua and Barbuda', 'Argentina', 'Armenia', 'Australia', 'Austria',
+  'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Belize', 'Benin', 'Bhutan',
+  'Bolivia', 'Bosnia and Herzegovina', 'Botswana', 'Brazil', 'Brunei', 'Bulgaria', 'Burkina Faso', 'Burundi', 'Cabo Verde', 'Cambodia',
+  'Cameroon', 'Canada', 'Central African Republic', 'Chad', 'Chile', 'China', 'Colombia', 'Comoros', 'Congo (Congo-Brazzaville)', 'Costa Rica',
+  'Croatia', 'Cuba', 'Cyprus', 'Czechia (Czech Republic)', 'Democratic Republic of the Congo', 'Denmark', 'Djibouti', 'Dominica', 'Dominican Republic', 'Ecuador',
+  'Egypt', 'El Salvador', 'Equatorial Guinea', 'Eritrea', 'Estonia', 'Eswatini', 'Ethiopia', 'Fiji', 'Finland', 'France',
+  'Gabon', 'Gambia', 'Georgia', 'Germany', 'Ghana', 'Greece', 'Grenada', 'Guatemala', 'Guinea', 'Guinea-Bissau',
+  'Guyana', 'Haiti', 'Holy See', 'Honduras', 'Hungary', 'Iceland', 'India', 'Indonesia', 'Iran', 'Iraq',
+  'Ireland', 'Israel', 'Italy', 'Ivory Coast', 'Jamaica', 'Japan', 'Jordan', 'Kazakhstan', 'Kenya', 'Kiribati',
+  'Kuwait', 'Kyrgyzstan', 'Laos', 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya', 'Liechtenstein', 'Lithuania',
+  'Luxembourg', 'Madagascar', 'Malawi', 'Malaysia', 'Maldives', 'Mali', 'Malta', 'Marshall Islands', 'Mauritania', 'Mauritius',
+  'Mexico', 'Micronesia', 'Moldova', 'Monaco', 'Mongolia', 'Montenegro', 'Morocco', 'Mozambique', 'Myanmar (formerly Burma)', 'Namibia',
+  'Nauru', 'Nepal', 'Netherlands', 'New Zealand', 'Nicaragua', 'Niger', 'Nigeria', 'North Korea', 'North Macedonia', 'Norway',
+  'Oman', 'Pakistan', 'Palau', 'Palestine State', 'Panama', 'Papua New Guinea', 'Paraguay', 'Peru', 'Philippines', 'Poland',
+  'Portugal', 'Qatar', 'Romania', 'Russia', 'Rwanda', 'Saint Kitts and Nevis', 'Saint Lucia', 'Saint Vincent and the Grenadines', 'Samoa', 'San Marino',
+  'Sao Tome and Principe', 'Saudi Arabia', 'Senegal', 'Serbia', 'Seychelles', 'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia', 'Solomon Islands',
+  'Somalia', 'South Africa', 'South Korea', 'South Sudan', 'Spain', 'Sri Lanka', 'Sudan', 'Suriname', 'Sweden', 'Switzerland',
+  'Syria', 'Tajikistan', 'Tanzania', 'Thailand', 'Timor-Leste', 'Togo', 'Tonga', 'Trinidad and Tobago', 'Tunisia', 'Turkey',
+  'Turkmenistan', 'Tuvalu', 'Uganda', 'Ukraine', 'United Arab Emirates', 'United Kingdom', 'United States', 'Uruguay', 'Uzbekistan', 'Vanuatu',
+  'Venezuela', 'Vietnam', 'Yemen', 'Zambia', 'Zimbabwe'
+];
+
 function CheckoutForm({
   validatedTotal,
   validatedItems,
@@ -72,8 +95,26 @@ function CheckoutForm({
     name: '',
     email: '',
     phone: '',
-    shippingAddress: '',
+    shippingAddressLine1: '',
+    shippingAddressLine2: '',
+    shippingCity: '',
+    shippingZip: '',
+    shippingCountry: 'United States',
   });
+  
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [countrySearch, setCountrySearch] = useState('United States');
+  const countryContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (countryContainerRef.current && !countryContainerRef.current.contains(event.target as Node)) {
+        setShowCountryDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -154,15 +195,81 @@ function CheckoutForm({
             className="w-full rounded-xl border border-black/10 px-4 py-3 outline-none focus:border-[var(--landing-accent)]"
           />
         </div>
-        <div>
-          <label className="block text-sm font-semibold text-[var(--landing-brand-strong)] mb-2">Shipping Address</label>
-          <textarea
+        <div className="space-y-3">
+          <label className="block text-sm font-semibold text-[var(--landing-brand-strong)]">Shipping Address</label>
+          <input
             required
-            rows={4}
-            value={form.shippingAddress}
-            onChange={(e) => setForm({ ...form, shippingAddress: e.target.value })}
+            placeholder="123 ShipBob Street"
+            value={form.shippingAddressLine1}
+            onChange={(e) => setForm({ ...form, shippingAddressLine1: e.target.value })}
             className="w-full rounded-xl border border-black/10 px-4 py-3 outline-none focus:border-[var(--landing-accent)]"
           />
+          <input
+            placeholder="Additional Street Field"
+            value={form.shippingAddressLine2}
+            onChange={(e) => setForm({ ...form, shippingAddressLine2: e.target.value })}
+            className="w-full rounded-xl border border-black/10 px-4 py-3 outline-none focus:border-[var(--landing-accent)]"
+          />
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              required
+              placeholder="e.g. Chicago"
+              value={form.shippingCity}
+              onChange={(e) => setForm({ ...form, shippingCity: e.target.value })}
+              className="w-full rounded-xl border border-black/10 px-4 py-3 outline-none focus:border-[var(--landing-accent)]"
+            />
+            <input
+              required
+              placeholder="60612"
+              value={form.shippingZip}
+              onChange={(e) => setForm({ ...form, shippingZip: e.target.value })}
+              className="w-full rounded-xl border border-black/10 px-4 py-3 outline-none focus:border-[var(--landing-accent)]"
+            />
+          </div>
+          
+          <div ref={countryContainerRef} className="relative">
+            <input
+              required
+              placeholder="Country"
+              value={form.shippingCountry}
+              onFocus={() => {
+                setShowCountryDropdown(true);
+                setCountrySearch(form.shippingCountry);
+              }}
+              onChange={(e) => {
+                setForm({ ...form, shippingCountry: e.target.value });
+                setCountrySearch(e.target.value);
+                setShowCountryDropdown(true);
+              }}
+              className="w-full rounded-xl border border-black/10 px-4 py-3 outline-none focus:border-[var(--landing-accent)]"
+            />
+            {showCountryDropdown && (
+              <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto rounded-xl border border-black/10 bg-white py-1 shadow-lg">
+                {COUNTRIES.filter((country) =>
+                  country.toLowerCase().includes(countrySearch.toLowerCase())
+                ).map((country) => (
+                  <button
+                    key={country}
+                    type="button"
+                    onClick={() => {
+                      setForm({ ...form, shippingCountry: country });
+                      setShowCountryDropdown(false);
+                    }}
+                    className="w-full px-4 py-2.5 text-left text-sm hover:bg-[var(--landing-accent-soft)]/20 text-[var(--landing-ink)] transition-colors"
+                  >
+                    {country}
+                  </button>
+                ))}
+                {COUNTRIES.filter((country) =>
+                  country.toLowerCase().includes(countrySearch.toLowerCase())
+                ).length === 0 && (
+                  <div className="px-4 py-2.5 text-sm text-[var(--landing-muted)]">
+                    No country found. Type to use custom value.
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="border-t border-black/5 pt-5">

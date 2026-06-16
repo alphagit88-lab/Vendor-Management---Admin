@@ -44,6 +44,12 @@ export type ShopOrder = {
   customerEmail: string;
   customerPhone: string | null;
   shippingAddress: string;
+  shippingAddressLine1?: string | null;
+  shippingAddressLine2?: string | null;
+  shippingCity?: string | null;
+  shippingZip?: string | null;
+  shippingCountry?: string | null;
+  shippingAddressDetails?: any;
   status: string;
   subtotal: number;
   totalAmount: number;
@@ -89,7 +95,13 @@ export async function createCheckoutSession(payload: {
     name: string;
     email: string;
     phone?: string;
-    shippingAddress: string;
+    shippingAddress?: string;
+    shippingAddressLine1?: string;
+    shippingAddressLine2?: string;
+    shippingCity?: string;
+    shippingState?: string;
+    shippingZip?: string;
+    shippingCountry?: string;
   };
 }): Promise<{ clientSecret: string; orderId: number; orderNumber: string; sessionId: string }> {
   const res = await fetch(`${API_URL}/shop/checkout`, {

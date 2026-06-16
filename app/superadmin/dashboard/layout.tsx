@@ -46,48 +46,48 @@ export default function SuperAdminDashboardLayout({ children }: { children: Reac
     <div className="flex bg-slate-950 min-h-screen text-slate-100 font-sans selection:bg-indigo-900 selection:text-indigo-200">
       {/* Sidebar */}
       <aside className="w-72 bg-slate-900 border-r border-slate-800 flex flex-col fixed h-full z-20 shadow-[4px_0_24px_rgba(0,0,0,0.3)]">
-          <div className="h-24 flex items-center justify-center px-4 border-b border-slate-800 shrink-0">
-            <Link href="/superadmin/dashboard" className="w-full">
-              <div className="relative w-full h-16 bg-slate-900 rounded-xl shadow-md border border-slate-800 overflow-hidden flex items-center justify-center px-4">
-                <div className="relative w-44 h-12 shrink-0">
-                  <Image
-                    src="/lgonn.jpeg"
-                    alt="SuperVendor Logo"
-                    fill
-                    sizes="176px"
-                    className="object-contain"
-                    priority
-                  />
-                </div>
+        <div className="h-24 flex items-center justify-center px-4 border-b border-slate-800 shrink-0">
+          <Link href="/superadmin/dashboard" className="w-full">
+            <div className="relative w-full h-16 bg-slate-900 rounded-xl shadow-md border border-slate-800 overflow-hidden flex items-center justify-center px-4">
+              <div className="relative w-44 h-12 shrink-0">
+                <Image
+                  src="/logo.png"
+                  alt="SuperVendor Logo"
+                  fill
+                  sizes="176px"
+                  className="object-contain rounded bg-white"
+                  priority
+                />
               </div>
-            </Link>
-          </div>
+            </div>
+          </Link>
+        </div>
 
-          <div className="px-4 py-6 overflow-y-auto flex-grow-1 sidebar-scroll-dark">
-            <p className="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Core Infrastructure</p>
-            <nav className="flex flex-col gap-1.5 border-none">
-              {navLinks.map((link) => {
-                const isActive = pathname === link.href;
-                const Icon = link.icon;
-                return (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    className={`group flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 ${isActive
-                      ? 'bg-indigo-950/80 text-indigo-200 shadow-sm ring-1 ring-indigo-500/20'
-                      : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
-                      }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Icon className={`w-4 h-4 ${isActive ? 'text-indigo-400' : 'text-slate-500 group-hover:text-slate-300'}`} strokeWidth={isActive ? 2.5 : 2} />
-                      <span className={`text-[15px] tracking-tight ${isActive ? 'font-bold' : 'font-medium'}`}>{link.name}</span>
-                    </div>
-                    {isActive && <div className="w-1.5 h-4 bg-indigo-500 rounded-full" />}
-                  </Link>
-                );
-              })}
-            </nav>
-          </div>
+        <div className="px-4 py-6 overflow-y-auto flex-grow-1 sidebar-scroll-dark">
+          <p className="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Core Infrastructure</p>
+          <nav className="flex flex-col gap-1.5 border-none">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              const Icon = link.icon;
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className={`group flex items-center justify-between px-4 py-2.5 rounded-xl transition-all duration-200 ${isActive
+                    ? 'bg-indigo-950/80 text-indigo-200 shadow-sm ring-1 ring-indigo-500/20'
+                    : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
+                    }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-indigo-400' : 'text-slate-500 group-hover:text-slate-300'}`} strokeWidth={isActive ? 2.5 : 2} />
+                    <span className={`text-[15px] tracking-tight ${isActive ? 'font-bold' : 'font-medium'}`}>{link.name}</span>
+                  </div>
+                  {isActive && <div className="w-1.5 h-4 bg-indigo-500 rounded-full" />}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
 
         {/* User Card */}
         <div className="p-4 border-t border-slate-800 bg-slate-900/50 m-4 rounded-xl">

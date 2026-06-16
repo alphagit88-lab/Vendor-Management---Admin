@@ -61,7 +61,7 @@ export const LandingHeader = () => {
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 h-24">
           <Link href="/#home" className="flex min-w-0 items-center h-full" onClick={() => setMenuOpen(false)}>
             <Image
-              src="/lgonn.jpeg"
+              src="/logo.png"
               alt="Vendor Management logo"
               width={160}
               height={80}

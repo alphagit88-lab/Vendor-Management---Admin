@@ -87,7 +87,7 @@ function SuccessContent() {
           <p><span className="font-semibold">Customer:</span> {order.customerName}</p>
           <p><span className="font-semibold">Email:</span> {order.customerEmail}</p>
           {order.customerPhone && <p><span className="font-semibold">Phone:</span> {order.customerPhone}</p>}
-          <p><span className="font-semibold">Shipping:</span> {order.shippingAddress}</p>
+          <p className="whitespace-pre-line"><span className="font-semibold">Shipping:</span><br />{order.shippingAddress}</p>
           <p><span className="font-semibold">Status:</span> {order.status}</p>
         </div>
 

@@ -174,7 +174,7 @@ function ForgotPasswordContent() {
         <div className="z-10 max-w-lg px-8 flex flex-col items-center justify-center">
           <div className="w-52 h-20 relative overflow-hidden bg-white rounded-md shadow-lg border border-gray-100">
             <div className="relative w-full h-full">
-              <Image src="/lgonn.jpeg" alt="SuperVendor" fill sizes="208px" className="object-contain rounded-md" priority />
+              <Image src="/logo.png" alt="SuperVendor" fill sizes="208px" className="object-contain rounded-md" priority />
             </div>
           </div>
           <p className="text-lg text-slate-300 mt-8 mb-8 leading-relaxed text-center">
