@@ -51,7 +51,7 @@ export default function SuperAdminDashboardLayout({ children }: { children: Reac
               <div className="relative w-full h-16 bg-slate-900 rounded-xl shadow-md border border-slate-800 overflow-hidden flex items-center justify-center px-4">
                 <div className="relative w-44 h-12 shrink-0">
                   <Image
-                    src="/lgon.jpeg"
+                    src="/lgonn.jpeg"
                     alt="SuperVendor Logo"
                     fill
                     sizes="176px"

@@ -57,7 +57,7 @@ export default function SuperAdminLogin() {
           <div className="relative p-0 bg-slate-900/80 rounded-xl shadow-2xl border border-indigo-500/30 backdrop-blur-xl animate-pulse">
             <div className="w-52 h-20 relative overflow-hidden">
               <Image
-                src="/lgon.jpeg"
+                src="/lgonn.jpeg"
                 alt="SuperVendor Logo"
                 fill
                 sizes="208px"
@@ -89,7 +89,7 @@ export default function SuperAdminLogin() {
             <div className="lg:hidden flex justify-center mb-8">
               <div className="relative p-0 bg-slate-900/80 rounded-xl shadow-xl border border-indigo-500/20">
                 <div className="w-48 h-16 relative overflow-hidden">
-                  <Image src="/lgon.jpeg" alt="SuperVendor Logo" fill sizes="192px" className="object-contain rounded-md" />
+                  <Image src="/lgonn.jpeg" alt="SuperVendor Logo" fill sizes="192px" className="object-contain rounded-md" />
                 </div>
               </div>
             </div>

@@ -136,7 +136,7 @@ function LoginContent() {
           <div className="w-52 h-20 relative overflow-hidden bg-white rounded-md shadow-lg border border-gray-100">
             <div className="relative w-full h-full">
               <Image
-                src="/lgon.jpeg"
+                src="/lgonn.jpeg"
                 alt="SuperVendor"
                 fill
                 sizes="208px"
@@ -162,7 +162,7 @@ function LoginContent() {
             <div className="lg:hidden flex justify-center mb-8">
               <div className="w-48 h-16 relative overflow-hidden bg-white rounded-md shadow-md border border-gray-100">
                 <div className="relative w-full h-full">
-                  <Image src="/lgon.jpeg" alt="SuperVendor" fill sizes="192px" className="object-contain rounded-md" />
+                  <Image src="/lgonn.jpeg" alt="SuperVendor" fill sizes="192px" className="object-contain rounded-md" />
                 </div>
               </div>
             </div>
