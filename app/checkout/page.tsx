@@ -13,6 +13,11 @@ import { ArrowLeft, CreditCard, Loader2 } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
+// US states list for dropdown
+const US_STATES = [
+  'AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'
+];
+
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   weight: ['500', '700'],
@@ -219,6 +224,18 @@ function CheckoutForm({
               onChange={(e) => setForm({ ...form, shippingCity: e.target.value })}
               className="w-full rounded-xl border border-black/10 px-4 py-3 outline-none focus:border-[var(--landing-accent)]"
             />
+            {form.shippingCountry === 'United States' && (
+              <select
+                value={form.shippingState}
+                onChange={(e) => setForm({ ...form, shippingState: e.target.value })}
+                className="w-full rounded-xl border border-black/10 px-4 py-3 outline-none focus:border-[var(--landing-accent)]"
+              >
+                <option value="">Select State</option>
+                {US_STATES.map((st) => (
+                  <option key={st} value={st}>{st}</option>
+                ))}
+              </select>
+            )}
             <input
               required
               placeholder="60612"
@@ -227,12 +244,7 @@ function CheckoutForm({
               className="w-full rounded-xl border border-black/10 px-4 py-3 outline-none focus:border-[var(--landing-accent)]"
             />
           </div>
-          <input
-            placeholder="State"
-            value={form.shippingState}
-            onChange={(e) => setForm({ ...form, shippingState: e.target.value })}
-            className="w-full rounded-xl border border-black/10 px-4 py-3 outline-none focus:border-[var(--landing-accent)]"
-          />
+
           
           <div ref={countryContainerRef} className="relative">
             <input
