@@ -87,7 +87,13 @@ function SuccessContent() {
           <p><span className="font-semibold">Customer:</span> {order.customerName}</p>
           <p><span className="font-semibold">Email:</span> {order.customerEmail}</p>
           {order.customerPhone && <p><span className="font-semibold">Phone:</span> {order.customerPhone}</p>}
-          <p className="whitespace-pre-line"><span className="font-semibold">Shipping:</span><br />{order.shippingAddress}</p>
+          <div className="mt-6 space-y-2 text-sm">
+            <p className="font-semibold">Shipping:</p>
+            <p>{order.shippingAddressLine1}</p>
+            {order.shippingAddressLine2 && <p>{order.shippingAddressLine2}</p>}
+            <p>{order.shippingCity}{order.shippingState ? `, ${order.shippingState}` : ''} {order.shippingZip}</p>
+            <p>{order.shippingCountry}</p>
+          </div>
           <p><span className="font-semibold">Status:</span> {order.status}</p>
         </div>
 

@@ -47,9 +47,9 @@ export type ShopOrder = {
   shippingAddressLine1?: string | null;
   shippingAddressLine2?: string | null;
   shippingCity?: string | null;
+  shippingState?: string | null;
   shippingZip?: string | null;
   shippingCountry?: string | null;
-  shippingAddressDetails?: any;
   status: string;
   subtotal: number;
   totalAmount: number;
