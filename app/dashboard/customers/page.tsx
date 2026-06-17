@@ -1,9 +1,10 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Plus, Users, Search, Edit, Trash2, X, MapPin, Phone, Building2, UserPlus, Layers, Target, RefreshCw } from 'lucide-react';
 import { API_URL } from '@/lib/config';
 import ConfirmModal from '@/components/ConfirmModal';
 import MapPicker from '@/components/MapPicker';
+import { COUNTRIES, US_STATES } from '@/lib/address';
 
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<any[]>([]);
@@ -11,7 +12,7 @@ export default function CustomersPage() {
   const [showModal, setShowModal] = useState(false);
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [formData, setFormData] = useState({
-    address: '', phone: '', account_id: '', permit_numbers: '',
+    address: '', address_line1: '', address_line2: '', city: '', state: '', zip: '', country: 'United States', phone: '', account_id: '', permit_numbers: '',
     registered_company_name: '', dba: '', email: '', sales_tax_id: '',
     has_cigarette_permit: false, tobacco_permit_number: '', tobacco_expire_date: '', payment_type: 'COD',
     latitude: undefined as number | undefined, longitude: undefined as number | undefined,
@@ -33,6 +34,21 @@ export default function CustomersPage() {
   const [showGroupDeleteConfirm, setShowGroupDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isGroupDeleting, setIsGroupDeleting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [countrySearch, setCountrySearch] = useState('United States');
+  const countryContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (countryContainerRef.current && !countryContainerRef.current.contains(event.target as Node)) {
+        setShowCountryDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const [showParModal, setShowParModal] = useState(false);
   const [selectedParCustomer, setSelectedParCustomer] = useState<any>(null);
@@ -107,6 +123,7 @@ export default function CustomersPage() {
         },
         body: JSON.stringify({
           ...formData,
+          address: [formData.address_line1, formData.address_line2, [formData.city, formData.state, formData.zip].filter(Boolean).join(' '), formData.country].filter(Boolean).join(', '),
           latitude: formData.latitude ? parseFloat(formData.latitude.toString()) : null,
           longitude: formData.longitude ? parseFloat(formData.longitude.toString()) : null,
           group_id: formData.group_id || null
@@ -117,7 +134,7 @@ export default function CustomersPage() {
         fetchCustomers();
         setShowModal(false);
         setFormData({
-          address: '', phone: '', account_id: '', permit_numbers: '',
+          address: '', address_line1: '', address_line2: '', city: '', state: '', zip: '', country: 'United States', phone: '', account_id: '', permit_numbers: '',
           registered_company_name: '', dba: '', email: '', sales_tax_id: '',
           has_cigarette_permit: false, tobacco_permit_number: '', tobacco_expire_date: '', payment_type: 'COD',
           latitude: undefined, longitude: undefined, group_id: ''
@@ -232,8 +249,34 @@ export default function CustomersPage() {
   };
 
   const handleEdit = (customer: any) => {
+    // Attempt to parse the address back into components
+    const addressStr = customer.address || '';
+    const parts = addressStr.split(',').map((p: string) => p.trim());
+    let address_line1 = parts[0] || '';
+    let address_line2 = '';
+    let city = '';
+    let state = '';
+    let zip = '';
+    let country = parts[parts.length - 1] === 'United States' ? 'United States' : (parts.length > 1 ? parts[parts.length - 1] : 'United States');
+    
+    if (parts.length >= 3) {
+      if (parts.length >= 4) {
+        address_line2 = parts[1];
+        const csz = parts[2].split(' ');
+        zip = csz.pop() || '';
+        state = csz.pop() || '';
+        city = csz.join(' ');
+      } else {
+        const csz = parts[1].split(' ');
+        zip = csz.pop() || '';
+        state = csz.pop() || '';
+        city = csz.join(' ');
+      }
+    }
+
     setFormData({
       address: customer.address || '',
+      address_line1, address_line2, city, state, zip, country,
       phone: customer.phone || '',
       account_id: customer.account_id || '',
       permit_numbers: customer.permit_numbers || '',
@@ -373,7 +416,7 @@ export default function CustomersPage() {
               setIsEdit(false);
               setEditId(null);
               setFormData({
-                address: '', phone: '', account_id: '', permit_numbers: '',
+                address: '', address_line1: '', address_line2: '', city: '', state: '', zip: '', country: 'United States', phone: '', account_id: '', permit_numbers: '',
                 registered_company_name: '', dba: '', email: '', sales_tax_id: '',
                 has_cigarette_permit: false, tobacco_permit_number: '', tobacco_expire_date: '', payment_type: 'COD',
                 latitude: undefined, longitude: undefined, group_id: ''
@@ -524,10 +567,101 @@ export default function CustomersPage() {
                 <div className="space-y-4">
                   <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6">Contact & Logistics</h3>
                   <div className="space-y-4">
-                    <div>
+                    <div className="space-y-3">
                       <label className="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-widest">Physical Address</label>
-                      <textarea className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600/10 rounded-lg transition resize-none h-20 text-sm font-medium outline-none" placeholder="Enter complete address..." required
-                        value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} />
+                      <input
+                        required
+                        placeholder="Street Address"
+                        value={formData.address_line1}
+                        onChange={(e) => setFormData({ ...formData, address_line1: e.target.value })}
+                        className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600/10 rounded-lg transition text-sm font-medium outline-none"
+                      />
+                      <input
+                        placeholder="Apartment, suite, etc. (optional)"
+                        value={formData.address_line2}
+                        onChange={(e) => setFormData({ ...formData, address_line2: e.target.value })}
+                        className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600/10 rounded-lg transition text-sm font-medium outline-none"
+                      />
+                      <div className="grid grid-cols-2 gap-3">
+                        <input
+                          required
+                          placeholder="City"
+                          value={formData.city}
+                          onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                          className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600/10 rounded-lg transition text-sm font-medium outline-none"
+                        />
+                        {formData.country === 'United States' ? (
+                          <select
+                            required
+                            value={formData.state}
+                            onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                            className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600/10 rounded-lg transition text-sm font-medium outline-none"
+                          >
+                            <option value="">Select State</option>
+                            {US_STATES.map((st) => (
+                              <option key={st} value={st}>{st}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            required
+                            placeholder="State / Province"
+                            value={formData.state}
+                            onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                            className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600/10 rounded-lg transition text-sm font-medium outline-none"
+                          />
+                        )}
+                        <input
+                          required
+                          placeholder="ZIP Code"
+                          value={formData.zip}
+                          onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
+                          className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600/10 rounded-lg transition text-sm font-medium outline-none"
+                        />
+                        <div ref={countryContainerRef} className="relative w-full">
+                          <input
+                            required
+                            placeholder="Country"
+                            value={formData.country}
+                            onFocus={() => {
+                              setShowCountryDropdown(true);
+                              setCountrySearch(formData.country);
+                            }}
+                            onChange={(e) => {
+                              setFormData({ ...formData, country: e.target.value });
+                              setCountrySearch(e.target.value);
+                              setShowCountryDropdown(true);
+                            }}
+                            className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600/10 rounded-lg transition text-sm font-medium outline-none"
+                          />
+                          {showCountryDropdown && (
+                            <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto rounded-xl border border-gray-100 bg-white py-1 shadow-lg">
+                              {COUNTRIES.filter((country) =>
+                                country.toLowerCase().includes(countrySearch.toLowerCase())
+                              ).map((country) => (
+                                <button
+                                  key={country}
+                                  type="button"
+                                  onClick={() => {
+                                    setFormData({ ...formData, country: country });
+                                    setShowCountryDropdown(false);
+                                  }}
+                                  className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 text-slate-700 transition-colors"
+                                >
+                                  {country}
+                                </button>
+                              ))}
+                              {COUNTRIES.filter((country) =>
+                                country.toLowerCase().includes(countrySearch.toLowerCase())
+                              ).length === 0 && (
+                                <div className="px-4 py-2.5 text-sm text-slate-400">
+                                  No country found. Type to use custom value.
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
                     <div>
                       <label className="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-widest">Email Address</label>
@@ -600,12 +734,18 @@ export default function CustomersPage() {
                        <MapPicker 
                         lat={formData.latitude} 
                         lng={formData.longitude} 
-                        onChange={(lat, lng, address) => setFormData(prev => ({ 
-                          ...prev, 
-                          latitude: lat, 
-                          longitude: lng,
-                          address: address || prev.address
-                        }))} 
+                        onChange={(lat, lng, address) => {
+                          const parts = (address || '').split(',').map(s => s.trim());
+                          setFormData(prev => ({ 
+                            ...prev, 
+                            latitude: lat, 
+                            longitude: lng,
+                            address: address || prev.address,
+                            address_line1: parts[0] || prev.address_line1,
+                            city: parts.length > 2 ? parts[1] : prev.city,
+                            country: parts[parts.length - 1] || prev.country
+                          }));
+                        }} 
                        />
                        <p className="text-[9px] text-slate-400 mt-2 italic font-medium uppercase tracking-widest">Click on map to pin precise delivery coordinates.</p>
                     </div>

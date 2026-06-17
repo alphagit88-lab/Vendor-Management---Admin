@@ -1,13 +1,14 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Plus, UserPlus, Search, Edit, Trash2, X, Users, Eye, EyeOff } from 'lucide-react';
 import { API_URL } from '@/lib/config';
 import ConfirmModal from '@/components/ConfirmModal';
+import { COUNTRIES, US_STATES } from '@/lib/address';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '' });
+  const [formData, setFormData] = useState({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '', address_line1: '', address_line2: '', city: '', state: '', zip: '', country: 'United States' });
   const [loading, setLoading] = useState(true);
   const [isEdit, setIsEdit] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
@@ -17,6 +18,20 @@ export default function UsersPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState('');
+  
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [countrySearch, setCountrySearch] = useState('United States');
+  const countryContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (countryContainerRef.current && !countryContainerRef.current.contains(event.target as Node)) {
+        setShowCountryDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const fetchUsers = async () => {
     try {
@@ -59,7 +74,11 @@ export default function UsersPage() {
       const method = isEdit ? 'PUT' : 'POST';
       
       // Ensure the role is always forced to staff
-      const requestData = { ...formData, role: 'staff' };
+      const requestData = { 
+        ...formData, 
+        role: 'staff',
+        inventory_location: [formData.address_line1, formData.address_line2, [formData.city, formData.state, formData.zip].filter(Boolean).join(' '), formData.country].filter(Boolean).join(', ')
+      };
       
       const res = await fetch(url, {
         method,
@@ -74,7 +93,7 @@ export default function UsersPage() {
         fetchUsers();
         setShowModal(false);
         setShowPassword(false);
-        setFormData({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '' });
+        setFormData({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '', address_line1: '', address_line2: '', city: '', state: '', zip: '', country: 'United States' });
         setIsEdit(false);
         setEditId(null);
       } else {
@@ -88,6 +107,31 @@ export default function UsersPage() {
   };
 
   const handleEdit = (user: any) => {
+    // Parse inventory_location back into address fields
+    const addressStr = user.inventory_location || '';
+    const parts = addressStr.split(',').map((p: string) => p.trim());
+    let address_line1 = parts[0] || '';
+    let address_line2 = '';
+    let city = '';
+    let state = '';
+    let zip = '';
+    let country = parts[parts.length - 1] === 'United States' ? 'United States' : (parts.length > 1 ? parts[parts.length - 1] : 'United States');
+    
+    if (parts.length >= 3) {
+      if (parts.length >= 4) {
+        address_line2 = parts[1];
+        const csz = parts[2].split(' ');
+        zip = csz.pop() || '';
+        state = csz.pop() || '';
+        city = csz.join(' ');
+      } else {
+        const csz = parts[1].split(' ');
+        zip = csz.pop() || '';
+        state = csz.pop() || '';
+        city = csz.join(' ');
+      }
+    }
+
     setFormData({
       name: user.name,
       username: user.username || '',
@@ -95,7 +139,8 @@ export default function UsersPage() {
       email: user.email || '',
       password: '',
       role: 'staff',
-      inventory_location: user.inventory_location || ''
+      inventory_location: user.inventory_location || '',
+      address_line1, address_line2, city, state, zip, country
     });
     setEditId(user.id);
     setIsEdit(true);
@@ -173,7 +218,7 @@ export default function UsersPage() {
             setIsEdit(false);
             setEditId(null);
             setShowPassword(false);
-            setFormData({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '' });
+            setFormData({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '', address_line1: '', address_line2: '', city: '', state: '', zip: '', country: 'United States' });
             setShowModal(true);
           }}
           className="bg-indigo-600 shadow-sm shadow-indigo-200 text-white flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition-all font-medium"
@@ -311,13 +356,101 @@ export default function UsersPage() {
 
                 <div>
                   <label className="block text-[11px] font-black text-slate-500 mb-1.5 uppercase tracking-widest">Location</label>
-                  <input 
-                    type="text" 
-                    className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium" 
-                    placeholder="e.g. Kandy, Colombo, Galle"
-                    value={formData.inventory_location} 
-                    onChange={e => setFormData({ ...formData, inventory_location: e.target.value })} 
-                  />
+                  <div className="space-y-3">
+                    <input
+                      required
+                      placeholder="Street Address"
+                      value={formData.address_line1}
+                      onChange={(e) => setFormData({ ...formData, address_line1: e.target.value })}
+                      className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium"
+                    />
+                    <input
+                      placeholder="Apartment, suite, etc. (optional)"
+                      value={formData.address_line2}
+                      onChange={(e) => setFormData({ ...formData, address_line2: e.target.value })}
+                      className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium"
+                    />
+                    <div className="grid grid-cols-2 gap-3">
+                      <input
+                        required
+                        placeholder="City"
+                        value={formData.city}
+                        onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                        className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium"
+                      />
+                      {formData.country === 'United States' ? (
+                        <select
+                          required
+                          value={formData.state}
+                          onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                          className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium"
+                        >
+                          <option value="">Select State</option>
+                          {US_STATES.map((st) => (
+                            <option key={st} value={st}>{st}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          required
+                          placeholder="State / Province"
+                          value={formData.state}
+                          onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                          className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium"
+                        />
+                      )}
+                      <input
+                        required
+                        placeholder="ZIP Code"
+                        value={formData.zip}
+                        onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
+                        className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium"
+                      />
+                      <div ref={countryContainerRef} className="relative w-full">
+                        <input
+                          required
+                          placeholder="Country"
+                          value={formData.country}
+                          onFocus={() => {
+                            setShowCountryDropdown(true);
+                            setCountrySearch(formData.country);
+                          }}
+                          onChange={(e) => {
+                            setFormData({ ...formData, country: e.target.value });
+                            setCountrySearch(e.target.value);
+                            setShowCountryDropdown(true);
+                          }}
+                          className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium"
+                        />
+                        {showCountryDropdown && (
+                          <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto rounded-xl border border-gray-100 bg-white py-1 shadow-lg">
+                            {COUNTRIES.filter((country) =>
+                              country.toLowerCase().includes(countrySearch.toLowerCase())
+                            ).map((country) => (
+                              <button
+                                key={country}
+                                type="button"
+                                onClick={() => {
+                                  setFormData({ ...formData, country: country });
+                                  setShowCountryDropdown(false);
+                                }}
+                                className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 text-slate-700 transition-colors"
+                              >
+                                {country}
+                              </button>
+                            ))}
+                            {COUNTRIES.filter((country) =>
+                              country.toLowerCase().includes(countrySearch.toLowerCase())
+                            ).length === 0 && (
+                              <div className="px-4 py-2.5 text-sm text-slate-400">
+                                No country found. Type to use custom value.
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div>

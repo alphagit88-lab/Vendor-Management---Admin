@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Plus, Search, Edit, Trash2, X, Users, Eye, EyeOff, ShieldAlert, AlertTriangle } from 'lucide-react';
 import { API_URL } from '@/lib/config';
+import { COUNTRIES, US_STATES } from '@/lib/address';
 
 export default function SuperAdminUsersPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [plans, setPlans] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '', admin_id: '', enable_par_levels: true, subscription_plan_id: '', is_active: true });
+  const [formData, setFormData] = useState({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '', admin_id: '', enable_par_levels: true, subscription_plan_id: '', is_active: true, address_line1: '', address_line2: '', city: '', state: '', zip: '', country: 'United States' });
   const [loading, setLoading] = useState(true);
   const [isEdit, setIsEdit] = useState(false);
   const [editId, setEditId] = useState<number | null>(null);
@@ -19,6 +20,20 @@ export default function SuperAdminUsersPage() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [activeAdminId, setActiveAdminId] = useState<number | 'unassigned' | null>(null);
+
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [countrySearch, setCountrySearch] = useState('United States');
+  const countryContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (countryContainerRef.current && !countryContainerRef.current.contains(event.target as Node)) {
+        setShowCountryDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const fetchUsers = async () => {
     try {
@@ -117,7 +132,7 @@ export default function SuperAdminUsersPage() {
         ...formData,
         username: formData.role === 'admin' ? '' : formData.username,
         admin_id: formData.role === 'staff' && formData.admin_id ? parseInt(formData.admin_id) : null,
-        inventory_location: formData.role === 'admin' ? '' : formData.inventory_location,
+        inventory_location: formData.role === 'admin' ? '' : [formData.address_line1, formData.address_line2, [formData.city, formData.state, formData.zip].filter(Boolean).join(' '), formData.country].filter(Boolean).join(', '),
         enable_par_levels: formData.enable_par_levels,
         is_active: formData.is_active,
         subscription_plan_id: formData.role === 'admin' && formData.subscription_plan_id ? parseInt(formData.subscription_plan_id) : null,
@@ -137,7 +152,7 @@ export default function SuperAdminUsersPage() {
         fetchUsers();
         setShowModal(false);
         setShowPassword(false);
-        setFormData({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '', admin_id: '', enable_par_levels: true, subscription_plan_id: '', is_active: true });
+        setFormData({ name: '', phone: '', username: '', email: '', password: '', role: 'staff', inventory_location: '', admin_id: '', enable_par_levels: true, subscription_plan_id: '', is_active: true, address_line1: '', address_line2: '', city: '', state: '', zip: '', country: 'United States' });
         setIsEdit(false);
         setEditId(null);
       } else {
@@ -151,18 +166,44 @@ export default function SuperAdminUsersPage() {
   };
 
   const handleEdit = (user: any) => {
+    // Parse inventory_location back into address fields
+    const addressStr = user.inventory_location || '';
+    const parts = addressStr.split(',').map((p: string) => p.trim());
+    let address_line1 = parts[0] || '';
+    let address_line2 = '';
+    let city = '';
+    let state = '';
+    let zip = '';
+    let country = parts[parts.length - 1] === 'United States' ? 'United States' : (parts.length > 1 ? parts[parts.length - 1] : 'United States');
+    
+    if (parts.length >= 3) {
+      if (parts.length >= 4) {
+        address_line2 = parts[1];
+        const csz = parts[2].split(' ');
+        zip = csz.pop() || '';
+        state = csz.pop() || '';
+        city = csz.join(' ');
+      } else {
+        const csz = parts[1].split(' ');
+        zip = csz.pop() || '';
+        state = csz.pop() || '';
+        city = csz.join(' ');
+      }
+    }
+
     setFormData({
       name: user.name,
       username: user.username || '',
       phone: user.phone,
       email: user.email || '',
       password: '',
-      role: user.role,
+      role: user.role || 'staff',
       inventory_location: user.inventory_location || '',
-      admin_id: user.admin_id ? String(user.admin_id) : '',
-      enable_par_levels: user.enable_par_levels ?? true,
-      subscription_plan_id: user.subscription_plan_id ? String(user.subscription_plan_id) : '',
-      is_active: user.is_active ?? true
+      admin_id: user.admin_id?.toString() || '',
+      enable_par_levels: user.enable_par_levels !== false,
+      subscription_plan_id: user.subscription_plan_id?.toString() || '',
+      is_active: user.is_active !== false,
+      address_line1, address_line2, city, state, zip, country
     });
     setEditId(user.id);
     setIsEdit(true);
@@ -243,7 +284,7 @@ export default function SuperAdminUsersPage() {
                 setIsEdit(false);
                 setEditId(null);
                 setShowPassword(false);
-                setFormData({ name: '', phone: '', username: '', email: '', password: '', role: 'admin', inventory_location: '', admin_id: '', enable_par_levels: true, subscription_plan_id: '', is_active: true });
+                setFormData({ name: '', phone: '', username: '', email: '', password: '', role: 'admin', inventory_location: '', admin_id: '', enable_par_levels: true, subscription_plan_id: '', is_active: true, address_line1: '', address_line2: '', city: '', state: '', zip: '', country: 'United States' });
                 setShowModal(true);
               }}
               className="bg-indigo-600 shadow-lg shadow-indigo-900/30 text-white flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm hover:bg-indigo-500 transition-all font-semibold"
@@ -409,7 +450,8 @@ export default function SuperAdminUsersPage() {
                   admin_id: typeof activeAdminId === 'number' ? String(activeAdminId) : '',
                   enable_par_levels: true,
                   subscription_plan_id: '',
-                  is_active: true
+                  is_active: true,
+                  address_line1: '', address_line2: '', city: '', state: '', zip: '', country: 'United States'
                 });
                 setShowModal(true);
               }}
@@ -600,13 +642,101 @@ export default function SuperAdminUsersPage() {
                 {formData.role !== 'admin' && (
                   <div>
                     <label className="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-widest">Assigned Location</label>
-                    <input 
-                      type="text" 
-                      className="w-full px-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium" 
-                      placeholder="e.g. Kandy, Colombo, Galle"
-                      value={formData.inventory_location} 
-                      onChange={e => setFormData({ ...formData, inventory_location: e.target.value })} 
-                    />
+                    <div className="space-y-3">
+                      <input
+                        required
+                        placeholder="Street Address"
+                        value={formData.address_line1}
+                        onChange={(e) => setFormData({ ...formData, address_line1: e.target.value })}
+                        className="w-full px-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium"
+                      />
+                      <input
+                        placeholder="Apartment, suite, etc. (optional)"
+                        value={formData.address_line2}
+                        onChange={(e) => setFormData({ ...formData, address_line2: e.target.value })}
+                        className="w-full px-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium"
+                      />
+                      <div className="grid grid-cols-2 gap-3">
+                        <input
+                          required
+                          placeholder="City"
+                          value={formData.city}
+                          onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                          className="w-full px-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium"
+                        />
+                        {formData.country === 'United States' ? (
+                          <select
+                            required
+                            value={formData.state}
+                            onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                            className="w-full px-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium"
+                          >
+                            <option value="">Select State</option>
+                            {US_STATES.map((st) => (
+                              <option key={st} value={st}>{st}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            required
+                            placeholder="State / Province"
+                            value={formData.state}
+                            onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                            className="w-full px-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium"
+                          />
+                        )}
+                        <input
+                          required
+                          placeholder="ZIP Code"
+                          value={formData.zip}
+                          onChange={(e) => setFormData({ ...formData, zip: e.target.value })}
+                          className="w-full px-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium"
+                        />
+                        <div ref={countryContainerRef} className="relative w-full">
+                          <input
+                            required
+                            placeholder="Country"
+                            value={formData.country}
+                            onFocus={() => {
+                              setShowCountryDropdown(true);
+                              setCountrySearch(formData.country);
+                            }}
+                            onChange={(e) => {
+                              setFormData({ ...formData, country: e.target.value });
+                              setCountrySearch(e.target.value);
+                              setShowCountryDropdown(true);
+                            }}
+                            className="w-full px-4 py-2 bg-slate-950 border border-slate-800 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/10 rounded-lg transition text-sm outline-none text-white font-medium"
+                          />
+                          {showCountryDropdown && (
+                            <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto rounded-xl border border-slate-800 bg-slate-900 py-1 shadow-lg">
+                              {COUNTRIES.filter((country) =>
+                                country.toLowerCase().includes(countrySearch.toLowerCase())
+                              ).map((country) => (
+                                <button
+                                  key={country}
+                                  type="button"
+                                  onClick={() => {
+                                    setFormData({ ...formData, country: country });
+                                    setShowCountryDropdown(false);
+                                  }}
+                                  className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-800 text-slate-300 transition-colors"
+                                >
+                                  {country}
+                                </button>
+                              ))}
+                              {COUNTRIES.filter((country) =>
+                                country.toLowerCase().includes(countrySearch.toLowerCase())
+                              ).length === 0 && (
+                                <div className="px-4 py-2.5 text-sm text-slate-500">
+                                  No country found. Type to use custom value.
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 )}
 

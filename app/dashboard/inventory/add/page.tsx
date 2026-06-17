@@ -56,8 +56,8 @@ export default function AddInventoryPage() {
   };
 
   const filteredItems = items.filter(item => 
-    item.description_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.item_number.toLowerCase().includes(searchTerm.toLowerCase())
+    (item.description_name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+    (item.item_number?.toLowerCase() || '').includes(searchTerm.toLowerCase())
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
