@@ -98,6 +98,7 @@ function CheckoutForm({
     shippingAddressLine1: '',
     shippingAddressLine2: '',
     shippingCity: '',
+    shippingState: '',
     shippingZip: '',
     shippingCountry: 'United States',
   });
@@ -226,6 +227,12 @@ function CheckoutForm({
               className="w-full rounded-xl border border-black/10 px-4 py-3 outline-none focus:border-[var(--landing-accent)]"
             />
           </div>
+          <input
+            placeholder="State"
+            value={form.shippingState}
+            onChange={(e) => setForm({ ...form, shippingState: e.target.value })}
+            className="w-full rounded-xl border border-black/10 px-4 py-3 outline-none focus:border-[var(--landing-accent)]"
+          />
           
           <div ref={countryContainerRef} className="relative">
             <input
