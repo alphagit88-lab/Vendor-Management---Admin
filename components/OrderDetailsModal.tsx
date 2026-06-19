@@ -42,9 +42,9 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onUpdate }: 
   };
 
   const subtotal = order.items?.reduce((acc: number, item: any) => acc + (item.subtotal || 0), 0) || 0;
+  const returnsTotal = order.returns?.reduce((acc: number, item: any) => acc + (item.subtotal || 0), 0) || 0;
   const credits = parseFloat(order.total_credits || 0);
-  const deposits = parseFloat(order.total_deposit || 0);
-  const netTotal = parseFloat(order.total_amount || 0);
+  const netTotal = subtotal - returnsTotal - credits;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -146,7 +146,15 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onUpdate }: 
                       <td className="px-6 py-4 text-sm font-black text-slate-900 text-right font-mono">${parseFloat(item.subtotal).toFixed(2)}</td>
                     </tr>
                   ))}
-                  {(!order.items || order.items.length === 0) && (
+                  {order.returns?.map((item: any, idx: number) => (
+                    <tr key={`ret-${idx}`} className="hover:bg-rose-50/50 transition-colors border-t-2 border-rose-100">
+                      <td className="px-6 py-4 text-xs font-black text-rose-700 uppercase">{item.item_name} (Return)</td>
+                      <td className="px-6 py-4 text-sm font-black text-rose-900 text-center font-mono">{item.quantity}</td>
+                      <td className="px-6 py-4 text-xs font-bold text-rose-400 text-right">${parseFloat(item.unit_price).toFixed(2)}</td>
+                      <td className="px-6 py-4 text-sm font-black text-rose-900 text-right font-mono">-${parseFloat(item.subtotal).toFixed(2)}</td>
+                    </tr>
+                  ))}
+                  {(!order.items || order.items.length === 0) && (!order.returns || order.returns.length === 0) && (
                     <tr>
                       <td colSpan={4} className="px-6 py-12 text-center">
                         <Package className="w-10 h-10 text-slate-200 mx-auto mb-3" />
@@ -173,14 +181,19 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onUpdate }: 
                 <span>Gross Item Subtotal</span>
                 <span className="text-slate-200 font-mono">${subtotal.toFixed(2)}</span>
               </div>
+              
               <div className="flex justify-between items-center text-[10px] font-black text-rose-400 uppercase tracking-widest">
                 <span>Credit Memos applied (-)</span>
                 <span className="font-mono">-${credits.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between items-center text-[10px] font-black text-emerald-400 uppercase tracking-widest">
-                <span>Container Deposits (+)</span>
-                <span className="font-mono">+${deposits.toFixed(2)}</span>
-              </div>
+
+              {/* Returns Section */}
+              {order.returns && order.returns.length > 0 && (
+                <div className="flex justify-between items-center text-[10px] font-black text-rose-400 uppercase tracking-widest">
+                  <span>Returns (-)</span>
+                  <span className="font-mono">-{order.returns.reduce((sum: number, r: any) => sum + (r.subtotal || 0), 0).toFixed(2)}</span>
+                </div>
+              )}
               <div className="pt-4 border-t border-slate-800 flex justify-between items-end">
                 <div className="flex flex-col">
                   <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Net Invoice Payload</span>

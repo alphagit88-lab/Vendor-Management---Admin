@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { Plus, ClipboardList, Search, Eye, Trash2, Truck, Download } from 'lucide-react';
-import { API_URL } from '@/lib/config';
+import { API_URL, API_BASE_URL } from '@/lib/config';
 import ConfirmModal from '@/components/ConfirmModal';
 import OrderDetailsModal from '@/components/OrderDetailsModal';
 import Link from 'next/link';
@@ -40,11 +40,11 @@ export default function OrdersPage() {
     fetchOrders();
   }, []);
 
-  const filteredOrders = orders.filter(o => 
+  const filteredOrders = orders.filter(o =>
     o.order_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     o.customer_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
+
   const handleViewDetails = async (id: number) => {
     setIsFetchingDetail(true);
     try {
@@ -80,6 +80,31 @@ export default function OrdersPage() {
       window.URL.revokeObjectURL(url);
     } catch (err) {
       console.error('TXT download error:', err);
+    }
+  };
+
+  // Download an existing PDF file. If not found, show a friendly message.
+  const handleDownloadExistingPDF = async (orderNumber: string) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/uploads/bills/bill_${orderNumber}.pdf`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      if (!res.ok) {
+        alert('PDF not found for this order');
+        return;
+      }
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `invoice_${orderNumber}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('PDF download error:', err);
+      alert('An error occurred while downloading the PDF');
     }
   };
 
@@ -119,7 +144,7 @@ export default function OrdersPage() {
           </div>
           <div className="h-12 w-48 bg-slate-100 rounded-xl animate-pulse" />
         </div>
-        
+
         <div className="bg-white rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden">
           <div className="p-24 flex flex-col items-center justify-center space-y-6">
             <div className="relative">
@@ -146,9 +171,9 @@ export default function OrdersPage() {
         <div className="p-4 border-b border-gray-100 flex items-center bg-gray-50/50">
           <div className="relative w-full max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input 
-              type="text" 
-              placeholder="Search by Order # or Shop..." 
+            <input
+              type="text"
+              placeholder="Search by Order # or Shop..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-shadow"
@@ -170,8 +195,9 @@ export default function OrdersPage() {
                 <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">Service Shop</th>
                 <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">Personnel</th>
                 <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">Credits</th>
-                <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">Deposits</th>
-                <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">Total Value</th>
+                <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">Returns</th>
+                <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">Total Sales</th>
+                <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">NET Total</th>
                 <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">Status</th>
                 <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">Timestamp</th>
                 <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-right font-sans">Actions</th>
@@ -195,17 +221,17 @@ export default function OrdersPage() {
                   <td className="px-4 py-1 whitespace-nowrap text-sm font-medium text-red-500">
                     -${parseFloat(o.total_credits || 0).toFixed(2)}
                   </td>
-                  <td className="px-4 py-1 whitespace-nowrap text-sm font-medium text-emerald-600">
-                    +${parseFloat(o.total_deposit || 0).toFixed(2)}
-                  </td>
+                  <td className="px-4 py-1 whitespace-nowrap text-sm font-medium text-emerald-400">-${parseFloat(o.total_return || 0).toFixed(2)}</td>
                   <td className="px-4 py-1 whitespace-nowrap text-sm font-bold text-blue-600">
                     ${parseFloat(o.total_amount).toFixed(2)}
                   </td>
+                  <td className="px-4 py-1 whitespace-nowrap text-sm font-medium text-green-600">
+                    ${(parseFloat(o.total_amount) - (parseFloat(o.total_credits) || 0) - (parseFloat(o.total_return) || 0)).toFixed(2)}
+                  </td>
                   <td className="px-4 py-1 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight ${
-                      o.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 
-                      o.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-700'
-                    }`}>
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight ${o.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :
+                        o.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-700'
+                      }`}>
                       {o.status}
                     </span>
                   </td>
@@ -218,6 +244,13 @@ export default function OrdersPage() {
                         onClick={() => handleDownloadTXT(o.id, o.order_number)}
                         className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg transition-all font-medium"
                         title="Download TXT"
+                      >
+                        <Download className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDownloadExistingPDF(o.order_number)}
+                        className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-all font-medium"
+                        title="Download PDF"
                       >
                         <Download className="w-4 h-4" />
                       </button>
@@ -252,7 +285,7 @@ export default function OrdersPage() {
         </div>
       </div>
 
-      <ConfirmModal 
+      <ConfirmModal
         isOpen={showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(false)}
         onConfirm={confirmDelete}
@@ -260,7 +293,7 @@ export default function OrdersPage() {
         title="Void System Order"
         message="Are you sure you want to void this order? This will permanently remove its transaction record and itemized metrics."
       />
-      <OrderDetailsModal 
+      <OrderDetailsModal
         isOpen={showDetails}
         onClose={() => setShowDetails(false)}
         order={selectedOrder}
