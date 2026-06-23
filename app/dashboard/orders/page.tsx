@@ -195,7 +195,6 @@ export default function OrdersPage() {
                 <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">Service Shop</th>
                 <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">Personnel</th>
                 <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">Credits</th>
-                <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">Returns</th>
                 <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">Total Sales</th>
                 <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">NET Total</th>
                 <th className="px-4 py-4 text-[11px] font-bold text-[#164174] uppercase tracking-widest text-left font-sans">Status</th>
@@ -218,15 +217,12 @@ export default function OrdersPage() {
                   <td className="px-4 py-1 whitespace-nowrap text-sm text-gray-600">
                     {o.user_name}
                   </td>
-                  <td className="px-4 py-1 whitespace-nowrap text-sm font-medium text-red-500">
-                    -${parseFloat(o.total_credits || 0).toFixed(2)}
-                  </td>
                   <td className="px-4 py-1 whitespace-nowrap text-sm font-medium text-emerald-400">-${parseFloat(o.total_return || 0).toFixed(2)}</td>
                   <td className="px-4 py-1 whitespace-nowrap text-sm font-bold text-blue-600">
                     ${parseFloat(o.total_amount).toFixed(2)}
                   </td>
                   <td className="px-4 py-1 whitespace-nowrap text-sm font-medium text-green-600">
-                    ${(parseFloat(o.total_amount) - (parseFloat(o.total_credits) || 0) - (parseFloat(o.total_return) || 0)).toFixed(2)}
+                    ${(parseFloat(o.total_amount) - (parseFloat(o.total_return) || 0)).toFixed(2)}
                   </td>
                   <td className="px-4 py-1 whitespace-nowrap">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight ${o.status === 'completed' ? 'bg-emerald-100 text-emerald-700' :

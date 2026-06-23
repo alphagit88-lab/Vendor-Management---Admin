@@ -43,8 +43,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onUpdate }: 
 
   const subtotal = order.items?.reduce((acc: number, item: any) => acc + (item.subtotal || 0), 0) || 0;
   const returnsTotal = order.returns?.reduce((acc: number, item: any) => acc + (item.subtotal || 0), 0) || 0;
-  const credits = parseFloat(order.total_credits || 0);
-  const netTotal = subtotal - returnsTotal - credits;
+  const netTotal = subtotal - returnsTotal;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -148,7 +147,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onUpdate }: 
                   ))}
                   {order.returns?.map((item: any, idx: number) => (
                     <tr key={`ret-${idx}`} className="hover:bg-rose-50/50 transition-colors border-t-2 border-rose-100">
-                      <td className="px-6 py-4 text-xs font-black text-rose-700 uppercase">{item.item_name} (Return)</td>
+                      <td className="px-6 py-4 text-xs font-black text-rose-700 uppercase">{item.item_name} (Credit)</td>
                       <td className="px-6 py-4 text-sm font-black text-rose-900 text-center font-mono">{item.quantity}</td>
                       <td className="px-6 py-4 text-xs font-bold text-rose-400 text-right">${parseFloat(item.unit_price).toFixed(2)}</td>
                       <td className="px-6 py-4 text-sm font-black text-rose-900 text-right font-mono">-${parseFloat(item.subtotal).toFixed(2)}</td>
@@ -182,15 +181,10 @@ export default function OrderDetailsModal({ isOpen, onClose, order, onUpdate }: 
                 <span className="text-slate-200 font-mono">${subtotal.toFixed(2)}</span>
               </div>
               
-              <div className="flex justify-between items-center text-[10px] font-black text-rose-400 uppercase tracking-widest">
-                <span>Credit Memos applied (-)</span>
-                <span className="font-mono">-${credits.toFixed(2)}</span>
-              </div>
-
-              {/* Returns Section */}
+              {/* Credits Section */}
               {order.returns && order.returns.length > 0 && (
                 <div className="flex justify-between items-center text-[10px] font-black text-rose-400 uppercase tracking-widest">
-                  <span>Returns (-)</span>
+                  <span>Credits (-)</span>
                   <span className="font-mono">-{order.returns.reduce((sum: number, r: any) => sum + (r.subtotal || 0), 0).toFixed(2)}</span>
                 </div>
               )}

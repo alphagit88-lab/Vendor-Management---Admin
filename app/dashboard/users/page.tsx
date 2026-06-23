@@ -23,10 +23,17 @@ export default function UsersPage() {
   const [countrySearch, setCountrySearch] = useState('United States');
   const countryContainerRef = useRef<HTMLDivElement>(null);
 
+  const [showStateDropdown, setShowStateDropdown] = useState(false);
+  const [stateSearch, setStateSearch] = useState('');
+  const stateContainerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (countryContainerRef.current && !countryContainerRef.current.contains(event.target as Node)) {
         setShowCountryDropdown(false);
+      }
+      if (stateContainerRef.current && !stateContainerRef.current.contains(event.target as Node)) {
+        setShowStateDropdown(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -379,17 +386,49 @@ export default function UsersPage() {
                         className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium"
                       />
                       {formData.country === 'United States' ? (
-                        <select
-                          required
-                          value={formData.state}
-                          onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                          className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium"
-                        >
-                          <option value="">Select State</option>
-                          {US_STATES.map((st) => (
-                            <option key={st} value={st}>{st}</option>
-                          ))}
-                        </select>
+                        <div ref={stateContainerRef} className="relative w-full">
+                          <input
+                            required
+                            placeholder="State"
+                            value={formData.state}
+                            onFocus={() => {
+                              setShowStateDropdown(true);
+                              setStateSearch(formData.state);
+                            }}
+                            onChange={(e) => {
+                              setFormData({ ...formData, state: e.target.value });
+                              setStateSearch(e.target.value);
+                              setShowStateDropdown(true);
+                            }}
+                            className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600/10 rounded-lg transition text-sm outline-none font-medium"
+                          />
+                          {showStateDropdown && (
+                            <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto rounded-xl border border-gray-100 bg-white py-1 shadow-lg">
+                              {US_STATES.filter((st) =>
+                                st.toLowerCase().includes(stateSearch.toLowerCase())
+                              ).map((st) => (
+                                <button
+                                  key={st}
+                                  type="button"
+                                  onClick={() => {
+                                    setFormData({ ...formData, state: st });
+                                    setShowStateDropdown(false);
+                                  }}
+                                  className="w-full px-4 py-2.5 text-left text-sm hover:bg-slate-50 text-slate-700 transition-colors"
+                                >
+                                  {st}
+                                </button>
+                              ))}
+                              {US_STATES.filter((st) =>
+                                st.toLowerCase().includes(stateSearch.toLowerCase())
+                              ).length === 0 && (
+                                <div className="px-4 py-2.5 text-sm text-slate-400">
+                                  No state found.
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       ) : (
                         <input
                           required

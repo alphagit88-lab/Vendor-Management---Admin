@@ -79,7 +79,7 @@ export default function ReturnsPage() {
               <div className="w-16 h-16 border-4 border-slate-50 border-t-indigo-600 rounded-full animate-spin" />
               <RotateCcw className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 text-indigo-400 animate-pulse" />
             </div>
-            <p className="text-sm font-black text-slate-300 uppercase tracking-[0.2em]">Loading returns data...</p>
+            <p className="text-sm font-black text-slate-300 uppercase tracking-[0.2em]">Loading credits data...</p>
           </div>
         </div>
       </div>
@@ -90,8 +90,8 @@ export default function ReturnsPage() {
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <div>
-          <h1 className="text-[30px] leading-none font-bold text-slate-900 tracking-tight">Returns Management</h1>
-          <p className="text-slate-500 mt-1 text-sm font-medium">Track returned items from customers.</p>
+          <h1 className="text-[30px] leading-none font-bold text-slate-900 tracking-tight">Credits Management</h1>
+          <p className="text-slate-500 mt-1 text-sm font-medium">Track credited items from customers.</p>
         </div>
       </div>
 
@@ -152,7 +152,7 @@ export default function ReturnsPage() {
                     <button 
                       onClick={() => handleDelete(r.id)}
                       className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-all font-medium"
-                      title="Delete Return"
+                      title="Delete Credit"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -164,8 +164,8 @@ export default function ReturnsPage() {
           {filteredReturns.length === 0 && (
             <div className="p-16 text-center flex flex-col items-center">
               <RotateCcw className="w-12 h-12 text-slate-300 mb-4" />
-              <h3 className="text-lg font-bold text-slate-900">No returns yet</h3>
-              <p className="text-slate-500 mt-2 max-w-sm">Track returned items once submitted from mobile.</p>
+              <h3 className="text-lg font-bold text-slate-900">No credits yet</h3>
+              <p className="text-slate-500 mt-2 max-w-sm">Track credited items once submitted from mobile.</p>
             </div>
           )}
         </div>
@@ -176,8 +176,8 @@ export default function ReturnsPage() {
         onClose={() => setShowDeleteConfirm(false)}
         onConfirm={confirmDelete}
         isLoading={isDeleting}
-        title="Delete Return Record"
-        message="Are you sure you want to delete this return record? This will permanently remove it."
+        title="Delete Credit Record"
+        message="Are you sure you want to delete this credit record? This will permanently remove it."
       />
     </div>
   );

@@ -12,7 +12,7 @@ export default function ItemsPage() {
   const [formData, setFormData] = useState({
     description_name: '', price: '', description: '',
     item_number: '', upc: '', cost: '', quantity_size: '', vendor_cost: '',
-    category_id: ''
+    category_id: '', units_per_case: ''
   });
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -39,7 +39,7 @@ export default function ItemsPage() {
     setFormData({
       description_name: '', price: '', description: '',
       item_number: '', upc: '', cost: '', quantity_size: '', vendor_cost: '',
-      category_id: ''
+      category_id: '', units_per_case: ''
     });
   };
 
@@ -202,7 +202,8 @@ export default function ItemsPage() {
       cost: item.cost || '',
       quantity_size: item.quantity_size || '',
       vendor_cost: item.vendor_cost || '',
-      category_id: item.category_id || ''
+      category_id: item.category_id || '',
+      units_per_case: item.units_per_case || ''
     });
     setEditId(item.id);
     setItemGroupPrices([]);
@@ -481,7 +482,7 @@ export default function ItemsPage() {
                         <input type="text" className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/10 rounded-lg transition text-sm font-mono outline-none" placeholder="000000000000"
                           value={formData.upc} onChange={e => setFormData({ ...formData, upc: e.target.value })} />
                       </div>
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-4 gap-3">
                         <div>
                           <label className="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-widest">Unit Cost</label>
                           <div className="relative">
@@ -489,6 +490,11 @@ export default function ItemsPage() {
                             <input type="number" step="0.01" className="w-full pl-6 pr-3 py-2 bg-white border border-gray-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/10 rounded-lg transition text-sm font-mono outline-none" placeholder="0.00"
                               value={formData.cost} onChange={e => setFormData({ ...formData, cost: e.target.value })} />
                           </div>
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-widest">Units Per Case</label>
+                          <input type="number" className="w-full px-4 py-2 bg-white border border-gray-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/10 rounded-lg transition text-sm font-mono outline-none" placeholder="0"
+                            value={formData.units_per_case} onChange={e => setFormData({ ...formData, units_per_case: e.target.value })} />
                         </div>
                         <div>
                           <label className="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-widest">Vendor Cost</label>

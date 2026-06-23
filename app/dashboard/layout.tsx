@@ -40,7 +40,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: 'Categories', href: '/dashboard/categories', icon: Layers },
     { name: 'Inventory Management', href: '/dashboard/inventory', icon: Boxes },
     { name: 'Distribution Orders', href: '/dashboard/orders', icon: ShoppingCart },
-    { name: 'Returns', href: '/dashboard/returns', icon: RotateCcw },
+    { name: 'Credits', href: '/dashboard/returns', icon: RotateCcw },
     { name: 'Reports', href: '/dashboard/reports', icon: ClipboardList },
     { name: 'Payment Settings', href: '/dashboard/payment-settings', icon: CreditCard },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
